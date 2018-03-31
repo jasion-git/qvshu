@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hivacation.webapp.biz.dao.WeChatGZHDao">
+	
+	<select id="getWeChatGZH" parameterType="com.hivacation.webapp.dto.WeChatGZH" resultType="com.hivacation.webapp.dto.WeChatGZH">
+	    select
+	    id,
+		account,
+		name,
+		app_id as appId,
+		secret,
+		access_token as accessToken,
+		expires_in as expiresIn,
+		create_time as createTime,
+		update_time as updateTime
+	    
+	    from t_webchat_gzh
+	    where account=#{account}
+	</select>
+	
+	<update id="updateWeChatGZH" parameterType="com.hivacation.webapp.dto.WeChatGZH">
+	    update t_webchat_gzh
+	    set update_time=now()
+	    <if test="accessToken!=null and accessToken!=''">
+	    ,access_token=#{accessToken}
+	    </if>
+	    <if test="expiresIn!=null">
+	    ,expires_in=#{expiresIn}
+	    </if>
+	    <if test="name!=null and name!=''">
+	    ,name=#{name}
+	    </if>
+	    where account=#{account}
+	</update>
+	
+</mapper>

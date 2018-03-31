@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hivacation.webapp.biz.dao.ThirdPartyProductDao">
+	<select id="getThirdPartyProductList" parameterType="java.util.Map" resultType="com.hivacation.webapp.dto.ThirdPartyProduct">
+	    select 
+		thpp.`name`,
+		thpp.id,
+		thpp.package_price as packagePrice,
+		thpp.single_price as singlePrice,
+		thpp.content
+		
+		from t_third_party_product thpp 
+		where thpp.district_id=#{districtId}
+	</select>
+</mapper>

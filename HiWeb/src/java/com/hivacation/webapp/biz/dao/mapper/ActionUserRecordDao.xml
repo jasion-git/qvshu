@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hivacation.webapp.biz.dao.ActionUserRecordDao">
+
+    <insert id="addActionUserRecord" parameterType="com.hivacation.webapp.dto.ActionUserRecord">
+        insert into t_action_user_record(
+		house_id,
+		action_id,
+		open_id,
+		friend_open_id,
+		amount,
+		create_time,
+		update_time
+        )value(
+        #{houseId},
+		#{actionId},
+		#{openId},
+		#{friendOpenId},
+		#{amount},
+		now(),
+		now()
+        )
+    </insert>
+    
+    <delete id="deleteActionUserRecord" parameterType="com.hivacation.webapp.dto.ActionUserRecord">
+        delete from t_action_user_record
+        where id=#{id}
+    </delete>
+    
+    <update id="updateActionUserRecord" parameterType="com.hivacation.webapp.dto.ActionUserRecord">
+        update t_action_user_record
+        set update_time=now()
+        <if test="friendOpenId!=null and friendOpenId!=''">
+        ,friend_open_id=#{friendOpenId}
+        </if>
+        <if test="amount!=null">
+        ,amount=#{amount}
+        </if>
+        where id=#{id}
+    </update>
+    
+    <sql id="getActionUserRecordListCondition">
+        <if test="openId!=null and openId!=''">
+            and open_id=#{openId}
+        </if>
+        <if test="friendOpenId!=null and friendOpenId!=''">
+            and friend_open_id=#{friendOpenId}
+        </if>
+        <if test="houseId!=null">
+            and house_id=#{houseId}
+        </if>
+        <if test="actionId!=null">
+            and action_id=#{actionId}
+        </if>
+    </sql>
+    
+    <select id="getActionUserRecordList" parameterType="java.util.Map" resultType="com.hivacation.webapp.dto.ActionUserRecord">
+        select 
+        id,
+		house_id as houseId,
+		action_id as actionId,
+		open_id as openId,
+		friend_open_id as friendOpenId,
+		amount,
+		create_time as createTime,
+		update_time as updateTime
+        
+        from t_action_user_record
+        where 1=1
+        <include refid="getActionUserRecordListCondition"></include>
+        order by update_time desc
+        <if test="offset!=null and pageSize!=null">
+		limit #{offset},#{pageSize}
+		</if>
+    </select>
+    
+    <select id="getActionUserRecordListCount" parameterType="java.util.Map" resultType="int">
+        select count(1) n
+        
+        from t_action_user_record
+        where 1=1
+        <include refid="getActionUserRecordListCondition"></include>
+    </select>
+    
+    <select id="getKanJiaFriendList" parameterType="java.util.Map" resultType="java.util.Map">
+        select tsr.`name`,tsr.head_url as headUrl
+        from t_action_user_record taur
+		LEFT JOIN t_subscribe_record tsr on tsr.open_id=taur.open_id
+		where 1=1
+		<if test="actionId!=null">
+		    and taur.action_id=#{actionId}
+		</if>
+		<if test="houseId!=null">
+		    and taur.house_id=#{houseId}
+		</if>
+		<if test="friendOpenId!=null and friendOpenId!=''">
+		    and taur.friend_open_id=#{friendOpenId}
+		</if>
+		<if test="openId!=null and openId!=''">
+		    and taur.open_id!=#{openId}
+		</if>
+		
+		<if test="offset!=null and pageSize!=null">
+		limit #{offset},#{pageSize}
+		</if>
+    </select>
+    
+</mapper>

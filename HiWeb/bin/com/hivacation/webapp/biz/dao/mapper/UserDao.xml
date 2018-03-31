@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hivacation.webapp.biz.dao.UserDao">
+	<select id="test" parameterType="java.util.Map" resultType="java.util.Map">
+	    select name,account from t_user limit 1
+	</select>
+	
+	<select id="getUser" parameterType="com.hivacation.webapp.dto.UserInfo" resultType="com.hivacation.webapp.dto.UserInfo">
+	    select
+	    id,
+		name,
+		account,
+		password,
+		phone,
+		header_url as headerUrl,
+		wx_open_id as wxOpenId
+	    
+	    from t_user
+	    <if test="id!=null">
+	        where id=#{id}
+	    </if>
+	    <if test="wxOpenId!=null and wxOpenId!=''">
+	        where wx_open_id=#{wxOpenId}
+	    </if>
+	    <if test="phone!=null and phone!=''">
+	        where phone=#{phone} or account=#{phone} limit 1
+	    </if>
+	    
+	</select>
+	
+	<insert id="addUser" parameterType="com.hivacation.webapp.dto.UserInfo">
+	   <selectKey resultType="int" keyProperty="id">
+			SELECT
+			LAST_INSERT_ID()
+		</selectKey>
+	    insert into t_user(
+	   	name,
+		account,
+		password,
+		phone,
+		header_url,
+		wx_open_id,
+		proxy_user1_id,
+		proxy_user2_id,
+		update_time,
+		create_time
+	   )value(
+	   	#{name},
+		#{account},
+		#{password},
+		#{phone},
+		#{headerUrl},
+		#{wxOpenId},
+		#{proxyUser1Id},
+		#{proxyUser2Id},
+		now(),
+		now()
+	   )
+	</insert>
+	
+	<update id="updateUser" parameterType="com.hivacation.webapp.dto.UserInfo">
+	    update t_user set update_time=now()
+	    <if test="wxOpenId!=null and wxOpenId!=''">
+	    ,wx_open_id=#{wxOpenId}
+	    </if>
+	    <if test="headerUrl!=null and headerUrl!=''">
+	    ,header_url=#{headerUrl}
+	    </if>
+	    <if test="name!=null and name!=''">
+	    ,name=#{name}
+	    </if>
+	    <if test="password!=null and password!=''">
+	    ,password=#{password}
+	    </if>
+	    <if test="phone!=null and phone!=''">
+	    ,phone=#{phone}
+	    </if>
+	    <if test="proxyUser1Id!=null">
+	    ,proxy_user1_id=#{proxyUser1Id}
+	    </if>
+	    <if test="proxyUser2Id!=null">
+	    ,proxy_user2_id=#{proxyUser2Id}
+	    </if>
+	    <if test="clearProxyUser12!=null">
+	    ,proxy_user1_id=null,proxy_user2_id=null
+	    </if>
+	    <if test="clearProxyUser2!=null">
+	    ,proxy_user2_id=null
+	    </if>
+	    
+	    where id=#{id}
+	</update>
+	
+</mapper>

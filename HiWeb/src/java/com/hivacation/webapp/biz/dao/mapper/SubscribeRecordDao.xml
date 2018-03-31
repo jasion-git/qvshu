@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hivacation.webapp.biz.dao.SubscribeRecordDao">
+	
+    <insert id="addSubscribeRecord" parameterType="com.hivacation.webapp.dto.SubscribeRecord">
+        insert into t_subscribe_record(
+		account,
+		open_id,
+		be_subscribe,
+		name,
+		head_url,
+		is_subscribe,
+		create_time,
+		update_time
+        )value(
+        #{account},
+		#{openId},
+		#{beSubscribe},
+		#{name},
+		#{headUrl},
+		#{isSubscribe},
+		now(),
+		now()
+        )
+    </insert>
+    
+    <delete id="deleteSubscribeRecord" parameterType="com.hivacation.webapp.dto.SubscribeRecord">
+        delete from t_subscribe_record
+        where open_id=#{openId}
+    </delete>
+    
+    <update id="updateSubscribeRecord" parameterType="com.hivacation.webapp.dto.SubscribeRecord">
+        update t_subscribe_record
+        set update_time=now()
+        <if test="account!=null and account!=''">
+        ,account=#{account}
+        </if>
+        <if test="name!=null and name!=''">
+        ,name=#{name}
+        </if>
+        <if test="headUrl!=null and headUrl!=''">
+        ,head_url=#{headUrl}
+        </if>
+        <if test="isSubscribe!=null">
+        ,is_subscribe=#{isSubscribe}
+        </if>
+        where open_id=#{openId}
+    </update>
+    
+    <select id="getSubscribeRecord" parameterType="com.hivacation.webapp.dto.SubscribeRecord" resultType="com.hivacation.webapp.dto.SubscribeRecord">
+        select 
+        id,
+		account,
+		open_id as openId,
+		is_subscribe as isSubscribe,
+		be_subscribe as beSubscribe,
+		name,
+		head_url as headUrl,
+		create_time as createTime,
+		update_time as updateTime
+        
+        from t_subscribe_record
+        where open_id=#{openId}
+        
+        limit 1;
+    </select>
+	
+</mapper>

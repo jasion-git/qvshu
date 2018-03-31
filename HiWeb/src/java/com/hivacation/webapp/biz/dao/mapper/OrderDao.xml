@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hivacation.webapp.biz.dao.OrderDao">
+	<!-- 查询房源房态 -->
+	<select id="getHouseStatusListForUpdate" parameterType="java.util.Map" resultType="com.hivacation.webapp.dto.HouseStatus">
+	    select 
+	    thds.id,
+		thds.date,
+		thds.house_id as houseId,
+		thds.`status`
+		
+		from t_house_day_status thds
+		where thds.house_id=#{houseId}
+		and thds.date>=#{startTime}
+		and thds.date <![CDATA[ <#{endTime} ]]>
+		
+		for update
+	</select>
+	<update id="updateHouseStatusForOrder" parameterType="java.util.Map">
+	    update t_house_day_status set status=0,order_id=#{orderId}
+	    where id in 
+	    <foreach collection="houseStatusList" index="index" item="item" open="(" separator="," close=")">
+        	#{item.id}
+   		</foreach>
+	</update>
+	
+	<select id="getHouseDatePriceList" parameterType="java.util.Map" resultType="com.hivacation.webapp.dto.HouseStatus">
+	    select 
+	    thdp.`day` as date,
+		thdp.order_amount as orderAmount
+		
+		from t_house_day_price thdp
+		where thdp.house_id=#{houseId}
+		and thdp.`day`>=#{startTime}
+		and thdp.`day` <![CDATA[ <#{endTime} ]]>
+	</select>
+	
+	<!-- 查询小区第三方产品 -->
+	<select id="getThirdPartyProductList" parameterType="java.util.Map" resultType="com.hivacation.webapp.dto.ThirdPartyProduct">
+	    select 
+	    thpp.id,
+		thpp.name,
+		thpp.type,
+		thpp.package_price as packagePrice,
+		thpp.single_price as singlePrice
+		
+		from t_third_party_product thpp
+		where thpp.district_id in (
+			select district_id from t_house th
+			where th.id=#{houseId}
+		)
+		<if test="ids!=null">
+		    and thpp.id in
+			<foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+          	#{item}
+     		</foreach>
+		</if>
+	</select>
+	
+	<insert id="addOrder" parameterType="com.hivacation.webapp.dto.Order">
+	    <selectKey resultType="int" keyProperty="id">
+			SELECT
+			LAST_INSERT_ID()
+		</selectKey>
+	    insert into t_order(
+		order_no,
+		payment_status,
+		order_status,
+		live_status,
+		financial_status,
+		type,
+		house_id,
+		house_type,
+		user_name,
+		remark,
+		book_payment_time,
+		user_account,
+		book_payment_type,
+		book_get_amount,
+		book_type,
+		book_discount_amount,
+		book_collection_amount,
+		book_amount,
+		book_leave_time,
+		book_live_time,
+		book_time,
+		house_book_count,
+		user_phone,
+		house_district_id,
+		house_district,
+		house_name,
+		user_id,
+		proxy_user1_id,
+		proxy_user2_id,
+		operator_id,
+		create_time,
+		update_time
+	    )value(
+	    #{orderNo},
+		#{paymentStatus},
+		#{orderStatus},
+		#{liveStatus},
+		#{financialStatus},
+		#{type},
+		#{houseId},
+		#{houseType},
+		#{userName},
+		#{remark},
+		#{bookPaymentTime},
+		#{userAccount},
+		#{bookPaymentType},
+		#{bookGetAmount},
+		#{bookType},
+		#{bookDiscountAmount},
+		#{bookCollectionAmount},
+		#{bookAmount},
+		#{bookLeaveTime},
+		#{bookLiveTime},
+		#{bookTime},
+		#{houseBookCount},
+		#{userPhone},
+		#{houseDistrictId},
+		#{houseDistrict},
+		#{houseName},
+		#{userId},
+		#{proxyUser1Id},
+		#{proxyUser2Id},
+		#{operatorId},
+		now(),
+		now()
+	    )
+	</insert>
+	
+	<insert id="addOrderLog" parameterType="com.hivacation.webapp.dto.OrderLog">
+	    insert into t_order_log(
+		order_id,
+		action,
+		result,
+		operator_id,
+		create_time
+	    )value(
+	    #{orderId},
+		#{action},
+		#{result},
+		#{operatorId},
+		now()
+	    )
+	</insert>
+	
+	<insert id="addOrderThirdPartyProductList" parameterType="com.hivacation.webapp.dto.OrderThirdPartyProduct">
+	    insert into t_order_third_party_product(
+		product_id,
+		name,
+		count,
+		order_id,
+		package_price,
+		single_price,
+		create_time,
+		update_time
+	    )values
+	    <foreach collection="productList" index="index" item="item"  separator="," >
+        (
+	    #{item.productId},
+		#{item.name},
+		#{item.count},
+		#{orderId},
+		#{item.packagePrice},
+		#{item.singlePrice},
+		now(),
+		now()
+	    )
+   		</foreach>
+	</insert>
+	
+</mapper>

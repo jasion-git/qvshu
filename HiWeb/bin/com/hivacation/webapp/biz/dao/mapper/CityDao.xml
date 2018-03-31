@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hivacation.webapp.biz.dao.CityDao">
+	<select id="getCityListOfHot" parameterType="java.util.Map" resultType="com.hivacation.webapp.dto.City">
+	    select 
+		id,
+		name,
+		hot
+		
+		from t_city 
+		order by hot desc
+		<if test="pageSize!=null">
+		limit ${pageSize}
+		</if>
+	</select>
+	
+	<select id="getDistrictListOfCity" parameterType="com.hivacation.webapp.dto.City" resultType="com.hivacation.webapp.dto.District">
+	    select 
+	    td.id,
+		td.`name`,
+		td.longitude,
+		td.latitude,
+		
+		(select url from t_district_img where district_id=td.id and type='common' and url is not null limit 1) as districtImg
+		
+		from t_district td
+		where td.city_id=#{id}
+	</select>
+	
+	<!-- 查询房态 -->
+	<resultMap id="districtDetailResultMap" type="com.hivacation.webapp.dto.District"> 
+  		<id column="id" property="id" /> 
+  		<result column="name" property="name" />
+  		<result column="cityId" property="cityId" />
+  		<result column="introduce" property="introduce" />
+  		<result column="cityName" property="cityName" />
+  		<collection property="districtImgs" javaType="ArrayList" ofType="com.hivacation.webapp.dto.DistrictImg">
+  		    <id column="districtImgId" property="id" /> 
+  		    <result column="url" property="url" />
+  		</collection>
+ 	</resultMap>
+ 	
+	<select id="getDistrictDetail" parameterType="com.hivacation.webapp.dto.District" resultMap="districtDetailResultMap">
+	    select 
+	    td.id,
+		td.name,
+		td.introduce,
+		td.city_id as cityId,
+		
+		tc.`name` as cityName,
+		
+		tdi.id as districtImgId,
+		tdi.url
+		
+		from t_district td 
+		left join t_city tc on tc.id=td.city_id
+		left join t_district_img tdi on tdi.district_id=td.id and tdi.type='peripheral' and tdi.url is not null
+		where td.id=#{id}
+	</select>
+	
+	<select id="getCityDistrictList" parameterType="java.util.Map" resultType="java.util.Map">
+	    select 
+		tc.`name` as cityName,
+		tc.id as cityId,
+		td.`name` as districtName,
+		td.id as districtId
+		
+		from t_district td 
+		left join t_city tc on tc.id=td.city_id
+		
+		ORDER BY tc.hot desc ,tc.id
+		<if test="pageSize!=null and offset!=null">
+		limit #{offset},#{pageSize}
+		</if>
+	</select>
+</mapper>

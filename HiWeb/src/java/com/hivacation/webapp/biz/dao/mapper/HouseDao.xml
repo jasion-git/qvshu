@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hivacation.webapp.biz.dao.HouseDao">
+	<insert id="addHouse" parameterType="com.hivacation.webapp.dto.House">
+	    <selectKey resultType="int" keyProperty="id">
+			SELECT
+			LAST_INSERT_ID()
+		</selectKey>
+	    insert into t_house(
+		merchant_id,
+		city_id,
+		district_id,
+		name,
+		type,
+		update_time,
+		create_time,
+		share_img_url,
+		share_content,
+		share_title,
+		fun_count,
+		live_count,
+		parking,
+		is_spot_check,
+		toilet_independen,
+		toilet_common,
+		layout_balcony,
+		layout_kitchen,
+		layout_office,
+		layout_room,
+		floor_count,
+		area,
+		similar_house_count,
+		manage_type,
+		introduction,
+		sub_introduction,
+		offline_no,
+		price
+	    )value(
+	    #{merchantId],
+		#{cityId},
+		#{districtId},
+		#{name},
+		#{type},
+		now(),
+		now(),
+		#{shareImgUrl},
+		#{shareContent},
+		#{shareTitle},
+		#{funCount},
+		#{liveCount},
+		#{parking},
+		#{isSpotCheck},
+		#{toiletIndependen},
+		#{toiletCommon},
+		#{layoutBalcony},
+		#{layoutKitchen},
+		#{layoutOffice},
+		#{layoutRoom},
+		#{floorCount},
+		#{area},
+		#{similarHouseCount},
+		#{manageType},
+		#{introduction},
+		#{subIntroduction},
+		#{offlineNo},
+		#{price}
+	    )
+	</insert>
+	
+	<delete id="deleteHouse" parameterType="com.hivacation.webapp.dto.House">
+	    delete from t_house
+	    where id=#{id}
+	</delete>
+	
+	<update id="updateHouse" parameterType="com.hivacation.webapp.dto.House">
+	    update t_house
+	    set update_time=now()
+	    <if test="cityId!=null">
+	    ,city_id=#{cityId}
+	    </if>
+	    <if test="districtId!=null">
+	    ,district_id=#{districtId}
+	    </if>
+	    <if test="name!=null and name!=''">
+	    ,name=#{name}
+	    </if>
+	    <if test="type!=null and type!=''">
+	    ,type=#{type}
+	    </if>
+	    <if test="shareImgUrl!=null and shareImgUrl!=''">
+	    ,share_img_url=#{shareImgUrl}
+	    </if>
+	    <if test="shareContent!=null and shareContent!=''">
+	    ,share_content=#{shareContent}
+	    </if>
+	    <if test="shareTitle!=null and shareTitle!=''">
+	    ,share_title=#{shareTitle}
+	    </if>
+	    <if test="funCount!=null">
+	    ,fun_count=#{funCount}
+	    </if>
+	    <if test="liveCount!=null">
+	    ,live_count=#{liveCount}
+	    </if>
+	    <if test="parking!=null and parking!=''">
+	    ,parking=#{parking}
+	    </if>
+	    <if test="isSpotCheck!=null">
+	    ,is_spot_check=#{isSpotCheck}
+	    </if>
+	    <if test="toiletIndependen!=null">
+	    ,toilet_independen=#{toiletIndependen}
+	    </if>
+	    <if test="toiletCommon!=null">
+	    ,toilet_common=#{toiletCommon}
+	    </if>
+	    <if test="layoutBalcony!=null">
+	    ,layout_balcony=#{layoutBalcony}
+	    </if>
+	    <if test="layoutKitchen!=null">
+	    ,layout_kitchen=#{layoutKitchen}
+	    </if>
+	    <if test="layoutOffice!=null">
+	    ,layout_office=#{layoutOffice}
+	    </if>
+	    <if test="layoutRoom!=null">
+	    ,layout_room=#{layoutRoom}
+	    </if>
+	    <if test="floorCount!=null">
+	    ,floor_count=#{floorCount}
+	    </if>
+	    <if test="area!=null">
+	    ,area=#{area}
+	    </if>
+	    <if test="similarHouseCount!=null">
+	    ,similar_house_count=#{similarHouseCount}
+	    </if>
+	    <if test="manageType!=null and manageType!=''">
+	    ,manage_type=#{manageType}
+	    </if>
+	    <if test="introduction!=null and introduction!=''">
+	    ,introduction=#{introduction}
+	    </if>
+	    <if test="subIntroduction!=null and subIntroduction!=''">
+	    ,sub_introduction=#{subIntroduction}
+	    </if>
+	    <if test="offlineNo!=null and offlineNo!=''">
+	    ,offline_no=#{offlineNo}
+	    </if>
+	    <if test="price!=null">
+	    ,price=#{price}
+	    </if>
+	    
+	    where id=#{id}
+	</update>
+	
+	<select id="getHouse" parameterType="com.hivacation.webapp.dto.House" resultType="com.hivacation.webapp.dto.House">
+	    select 
+	    th.id,
+		th.merchant_id as merchantId,
+		th.city_id as cityId,
+		th.district_id as districtId,
+		th.name,
+		th.type,
+		th.update_time as updateTime,
+		th.create_time as createTime,
+		th.share_img_url as shareImgUrl,
+		th.share_content as shareContent,
+		th.share_title as shareTitle,
+		th.fun_count as funCount,
+		th.live_count as liveCount,
+		th.parking,
+		th.is_spot_check as isSpotCheck,
+		th.toilet_independen as toiletIndependen,
+		th.toilet_common as toiletCommon,
+		th.layout_balcony as layoutBalcony,
+		th.layout_kitchen as layoutKitchen,
+		th.layout_office as layoutOffice,
+		th.layout_room as layoutRoom,
+		th.floor_count as floorCount,
+		th.area,
+		th.similar_house_count as similarHouseCount,
+		th.manage_type as manageType,
+		th.introduction,
+		th.sub_introduction as subIntroduction,
+		th.offline_no as offlineNo,
+		th.price,
+		th.web_description as webDescription,
+		th.check_in_time as checkInTime,
+		th.check_out_time as checkOutTime,
+		th.reception_time as receptionTime,
+		th.deposit,
+		
+		(select count(1)n from t_bed where house_id=th.id) as bedCount
+	    
+	    from t_house th
+	    where id=#{id}
+	</select>
+	
+	<sql id="getHouseListCondition">
+	    <if test="likeName!=null and likeName!=''">
+	        and name like concat('%',#{likeName},'%')
+	    </if>
+	    <if test="merchantId!=null">
+	        and merchant_id=#{merchantId}
+	    </if>
+	    <if test="cityId!=null">
+	        and city_id=#{cityId}
+	    </if>
+	    <if test="districtId!=null">
+	        and district_id=#{districtId}
+	    </if>
+	    <if test="type!=null and type!=''">
+	        and type=#{type}
+	    </if>
+	    <if test="funCount!=null">
+	        and fun_count=#{funCount}
+	    </if>
+	    <if test="liveCount!=null">
+	        and live_count=#{liveCount}
+	    </if>
+	    <if test="parking!=null and parking!=''">
+	        and parking=#{parking}
+	    </if>
+	    <if test="isSpotCheck!=null">
+	        and is_spot_check=#{isSpotCheck}
+	    </if>
+	    <if test="toiletIndependen!=null">
+	        and toilet_independen=#{toiletIndependen}
+	    </if>
+	    <if test="toiletCommon!=null">
+	        and toilet_common=#{toiletCommon}
+	    </if>
+	    <if test="layoutBalcony!=null">
+	        and layout_balcony=#{layoutBalcony}
+	    </if>
+	    <if test="layoutKitchen!=null">
+	        and layout_kitchen=#{layoutKitchen}
+	    </if>
+	    <if test="layoutOffice!=null">
+	        and layout_office=#{layoutOffice}
+	    </if>
+	    <if test="layout_room!=null">
+	        and layout_room=#{layoutRoom}
+	    </if>
+	    <if test="floorCount!=null">
+	        and floor_count=#{floorCount}
+	    </if>
+	    <if test="MaxArea!=null">
+	        and area <![CDATA[ <=#{MaxArea} ]]>
+	    </if>
+	    <if test="MinArea!=null">
+	        and area >=#{MinArea}
+	    </if>
+	    <if test="similarHouseCount!=null">
+	        and similar_house_count=#{similarHouseCount}
+	    </if>
+	    <if test="manageType!=null and manageType!=''">
+	        and manage_type=#{manageType}
+	    </if>
+	    <if test="offlineNo!=null and offlineNo!=''">
+	        and offline_no=#{offlineNo}
+	    </if>
+	    <if test="houseIds!=null and houseIds!=''">
+			and id in (${houseIds})	        
+	    </if>
+	</sql>
+	
+	<select id="getHouseList" parameterType="java.util.Map" resultType="com.hivacation.webapp.dto.House">
+	    select
+		th.id,
+		th.merchant_id as merchantId,
+		th.city_id as cityId,
+		th.district_id as districtId,
+		th.name,
+		th.type,
+		th.update_time as updateTime,
+		th.create_time as createTime,
+		th.share_img_url as shareImgUrl,
+		th.share_content as shareContent,
+		th.share_title as shareTitle,
+		th.fun_count as funCount,
+		th.live_count as liveCount,
+		th.parking,
+		th.is_spot_check as isSpotCheck,
+		th.toilet_independen as toiletIndependen,
+		th.toilet_common as toiletCommon,
+		th.layout_balcony as layoutBalcony,
+		th.layout_kitchen as layoutKitchen,
+		th.layout_office as layoutOffice,
+		th.layout_room as layoutRoom,
+		th.floor_count as floorCount,
+		th.area,
+		th.similar_house_count as similarHouseCount,
+		th.manage_type as manageType,
+		th.introduction,
+		th.sub_introduction as subIntroduction,
+		th.offline_no as offlineNo,
+		th.price,
+		(select count(1)n from t_bed where house_id=th.id) as bedCount
+		
+		from t_house th
+		where 1=1
+		<include refid="getHouseListCondition"></include>
+		order by th.update_time desc
+		<if test="offset!=null and pageSize!=null">
+		limit #{offset},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="getHouseListCount" parameterType="java.util.Map" resultType="int">
+	    select count(1) n
+		
+		from t_house th
+		where 1=1
+		<include refid="getHouseListCondition"></include>
+	</select>
+	
+	<select id="getHouseImgs" parameterType="java.util.Map" resultType="com.hivacation.webapp.dto.HouseImg">
+	    select 
+	    id,
+		url,
+		house_id as houseId,
+		type
+	    
+	    from t_house_img
+		where 1=1
+		<if test="houseId!=null">
+		    and house_id=#{houseId}
+		</if>
+		<if test="type!=null and type!=''">
+		    and type=#{type}
+		</if>
+	</select>
+	
+	<select id="getHouseAttributes" parameterType="java.util.Map" resultType="com.hivacation.webapp.dto.HouseAttribute">
+	    select 
+		tha.id,
+		tha.type,
+		tha.name,
+		tha.icon
+				
+		from t_house_attribute tha
+		inner join t_house_house_atttr thha on thha.house_attribute_id=tha.id
+		where 1=1
+		<if test="houseId!=null">
+		    and thha.house_id=#{houseId}
+		</if>
+		<if test="type!=null and type!=''">
+		    and tha.type=#{type}
+		</if>
+		<if test="name!=null and name!=''">
+		    and tha.name=#{name}
+		</if>
+	</select>
+	
+	<select id="getHouseListOfHot" parameterType="java.util.Map" resultType="java.util.Map">
+	    select 
+		th.id,
+		th.name,
+		(select url from t_house_img where house_id=th.id and url is not null limit 1) as houseImg,
+		
+		thh.hot
+		
+		from t_house_hot thh
+		inner join t_house th on th.id=thh.house_id
+		
+		order by thh.hot DESC
+		
+		limit 5;
+	</select>
+	
+	<select id="getHouseListOfCity" parameterType="java.util.Map" resultType="java.util.Map">
+		select
+		th.id,
+		th.name,
+		th.layout_room layoutRoom,
+		
+		td.name as districtName,
+		
+		(
+			select url 
+			from t_house_img where house_id=th.id 
+			and url is not null limit 1
+		) as houseImg,
+		
+		(
+			select GROUP_CONCAT(tha.name) 
+			from t_house_attribute tha
+			inner join t_house_house_attr thha on thha.house_attribute_id=tha.id
+		    where thha.house_id=th.id and tha.type='attribute'
+		
+		) as houseAttributes
+		
+		from t_house th 
+		left join t_district td on td.id=th.district_id
+		
+		where th.city_id=#{cityId}
+		<if test="pageSize!=null">
+		limit ${pageSize}
+		</if>
+	</select>
+	
+	<select id="getHouseListOfRecommended" parameterType="java.util.Map" resultType="java.util.Map">
+	    select 
+		th.name,
+		th.layout_room as layoutRoom,
+		th.live_count as liveCount,
+		
+		(select count(1) from t_bed where house_id=th.id) as bedCount,
+		
+		(
+			select url 
+			from t_house_img where house_id=th.id 
+			and url is not null limit 1
+		) as houseImg,
+		
+		(
+			select GROUP_CONCAT(tha.name) 
+			from t_house_attribute tha
+			inner join t_house_house_attr thha on thha.house_attribute_id=tha.id
+		  where thha.house_id=th.id and tha.type='attribute'
+		
+		) as houseAttributes,
+		(
+			select order_amount 
+			from t_house_day_price 
+			where house_id=th.id and day=DATE_FORMAT(NOW(),'%Y-%m-%d') limit 1
+		) as orderAmount
+		
+		from t_house_recommended thr 
+		inner join t_house th on th.id=thr.house_id
+		
+		<if test="pageSize!=null">
+		limit ${pageSize}
+		</if>
+	</select>
+	
+	<!-- 查询房源图片 -->
+	<select id="getHouseImgList" parameterType="com.hivacation.webapp.dto.House" resultType="com.hivacation.webapp.dto.HouseImg">
+	    select
+		id,
+		url,
+		house_id as houseId,
+		type
+		
+		from t_house_img
+		where house_id=#{id} and url is not null
+	</select>
+	
+	<!-- 查询房源设施 -->
+	<select id="getHouseFacilityList" parameterType="com.hivacation.webapp.dto.House" resultType="com.hivacation.webapp.dto.HouseFacility">
+	    select 
+		thf.`name`,
+		thf.type
+		
+		from t_house_house_facility thhf
+		inner join t_house_facility thf on thf.id=thhf.facility_id
+		where thhf.house_id=#{id}
+		order by thf.type
+	</select>
+	
+	<!-- 查询周边图片 -->
+	<select id="getDistrictImgList" parameterType="com.hivacation.webapp.dto.House" resultType="com.hivacation.webapp.dto.DistrictImg">
+	    select 
+		tdi.id,
+		tdi.url
+		
+		from t_district_img tdi 
+		inner join t_house th on th.district_id=tdi.district_id
+		where th.id=#{id} and tdi.url is not null and tdi.type='peripheral'
+	</select>
+	
+	<!-- 查询可接待人群 -->
+	<select id="getHouseReceptionList" parameterType="com.hivacation.webapp.dto.House" resultType="com.hivacation.webapp.dto.HouseReception">
+	    select 
+		thr.`name`,
+		thr.id,
+		thr.type
+		
+		from t_house_house_reception thhr 
+		inner join t_house_reception thr on thr.id=thhr.reception_id
+		where thhr.house_id=#{id}
+	</select>
+	
+	<!-- 查询房源评论 -->
+	<resultMap id="comment" type="com.hivacation.webapp.dto.Comment"> 
+  		<id column="id" property="id" /> 
+  		<result column="userName" property="userName" />
+  		<result column="userId" property="userId" />
+  		<result column="userHeadImg" property="userHeadImg" />
+  		<result column="houseId" property="houseId" />
+  		<result column="content" property="content" />
+  		<result column="createTime" property="createTime" />
+  		<collection property="commentImgList" javaType="ArrayList" ofType="com.hivacation.webapp.dto.CommentImg">
+  		    <id column="commentImgId" property="id" /> 
+  		    <result property="url" column="url" />
+  		</collection>
+ 	</resultMap>
+ 
+	<select id="getCommentList" parameterType="com.hivacation.webapp.dto.House" resultMap="comment">
+		select 
+		tc.id,
+		tc.user_id as userId,
+		tc.content,
+		tc.create_time as createTime,
+		
+		tu.`name` as userName,
+		tu.header_url as userHeadImg,
+		
+		tci.id as commentImgId,
+		tci.url
+		
+		from t_comment tc 
+		inner join t_comment_img tci on tci.comment_id=tc.id
+		left join t_user tu on tu.id=tc.user_id
+		where tc.house_id=#{id}
+	</select>
+	
+	<select id="getSimpleHouseList" parameterType="java.util.Map" resultType="java.util.Map">
+	    select 
+		th.id,
+		th.name,
+		th.layout_room as layoutRoom,
+		th.live_count as liveCount,
+		th.district_id as districtId,
+		th.city_id as cityId,
+		
+		(select sum(count) from t_bed where house_id=th.id) as bedCount,
+		(select url from t_house_img where house_id=th.id and url is not null limit 1) as houseImg,
+		(
+			select GROUP_CONCAT(tha.`name`) 
+			from t_house_attribute tha
+			inner join t_house_house_attr thha on thha.house_attribute_id=tha.id
+			where thha.house_id=tha.id
+			and tha.type='attribute'
+		) as houseAttributes,
+
+		thdp.order_amount as orderAmount,
+		
+		tc.name as cityName,
+		td.name as districtName
+		
+		from t_house th 
+		left join t_house_day_price thdp on thdp.house_id=th.id and thdp.`day`=DATE_FORMAT(now(),'%Y-%m-%d') 
+		left join t_city tc on tc.id=th.city_id
+		left join t_district td on td.id=th.district_id and td.city_id=tc.id
+		
+		where 1=1
+		<if test="cityId!=null">
+		    and th.city_id=#{cityId}
+		</if>
+		<if test="districtId!=null">
+		    and th.district_id=#{districtId}
+		</if>
+		<if test="liveCount!=null">
+		    and th.live_count>=#{liveCount}
+		</if>
+		<if test="orderAmount!=null">
+		    and thdp.order_amount>=#{orderAmount}
+		</if>
+		<if test="houseId!=null">
+		    and th.id=#{houseId}
+		    limit 1
+		</if>
+	</select>
+	
+	<select id="getHouseStatusList" parameterType="java.util.Map" resultType="java.util.Map">
+	    select 
+		thds.date,
+		thds.`status`,
+		
+		thdp.order_amount as orderAmount
+		
+		from t_house_day_status thds
+		left join t_house_day_price thdp on thdp.`day`=thds.date and thdp.house_id=thds.house_id
+		
+		where thds.house_id=#{houseId}
+		and thds.date>=#{startTime}
+		and thds.date <![CDATA[ <=#{endTime} ]]>
+		
+		order by thds.date
+	</select>
+</mapper>
