@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hishu.vacation.biz.dao.HouseDayPriceDao">
+	
+	<insert id="addHouseDayPrice" parameterType="com.hishu.vacation.dto.HouseDayPrice">
+	    insert into t_house_day_price(
+		house_id,
+		day,
+		price_type,
+		collection_amount,
+		order_amount,
+		commission_rate,
+		update_time,
+		create_time
+	    )value(
+	    #{houseId},
+		#{day},
+		#{priceType},
+		#{collectionAmount},
+		#{orderAmount},
+		#{commissionRate},
+		now(),
+		now()
+	    )
+	    ON DUPLICATE KEY UPDATE update_time=now()
+	</insert>
+	
+	<delete id="deleteHouseDayPrice" parameterType="com.hishu.vacation.dto.HouseDayPrice">
+	    delete from t_house_day_price
+	    where id=#{id}
+	</delete>
+	
+	<update id="updateHouseDayPrice" parameterType="com.hishu.vacation.dto.HouseDayPrice">
+	    update t_house_day_price
+	    set update_time=now()
+	    <if test="priceType!=null and priceType!=''">
+	    ,price_type=#{priceType}
+	    </if>
+	    <if test="collectionAmount!=null">
+		,collection_amount=#{collectionAmount}	        
+	    </if>
+	    <if test="orderAmount!=null">
+	    ,order_amount=#{orderAmount}
+	    </if>
+	    <if test="commissionRate!=null">
+	    ,commission_rate=#{commissionRate}
+	    </if>
+	    
+	    where id=#{id}
+	</update>
+	
+	<select id="getHouseDayPrice" parameterType="com.hishu.vacation.dto.HouseDayPrice" resultType="com.hishu.vacation.dto.HouseDayPrice">
+	    select 
+	    id,
+		house_id as houseId,
+		day,
+		price_type as priceType,
+		collection_amount as collectionAmount,
+		order_amount as orderAmount,
+		commission_rate as commissionRate,
+		update_time as updateTime,
+		create_time as createTime
+			    
+	    from t_house_day_price
+	    where id=#{id}
+	</select>
+	
+	<sql id="getHouseDayPriceListCondition">
+	    <if test="houseId!=null">
+	        and house_id=#{houseId}
+	    </if>
+	    <if test="day!=null">
+	        and day=#{day}
+	    </if>
+	    <if test="priceType!=null and priceType">
+	        and price_type=#{priceType}
+	    </if>
+	    <if test="startTime!=null">
+	        and day>=#{startTime}
+	    </if>
+	    <if test="endTime!=null">
+	        and day <![CDATA[ <=#{endTime}]]>
+	    </if>
+	</sql>
+	<select id="getHouseDayPriceList" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.HouseDayPrice">
+	    select 
+	    id,
+		house_id as houseId,
+		day,
+		price_type as priceType,
+		collection_amount as collectionAmount,
+		order_amount as orderAmount,
+		commission_rate as commissionRate,
+		update_time as updateTime,
+		create_time as createTime
+		
+	    from t_house_day_price
+	    where 1=1
+	    <include refid="getHouseDayPriceListCondition"></include>
+	    order by day
+	    <if test="pageSize!=null and offset!=null">
+		limit #{offset},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="getHouseDayPriceListCount" parameterType="java.util.Map" resultType="int">
+	    select count(1) as n
+		
+	    from t_house_day_price
+	    where 1=1
+	    <include refid="getHouseDayPriceListCondition"></include>
+	</select>
+</mapper>

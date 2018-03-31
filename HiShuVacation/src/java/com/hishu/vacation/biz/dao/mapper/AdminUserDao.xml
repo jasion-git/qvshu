@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hishu.vacation.biz.dao.AdminUserDao">
+	
+	<insert id="addAdminUser" parameterType="com.hishu.vacation.dto.AdminUser">
+	    insert into t_admin_user(
+		name,
+		account,
+		password,
+		role_id,
+		status,
+		create_time,
+		update_time
+	    )value(
+	    #{name},
+		#{account},
+		#{password},
+		#{roleId},
+		#{status},
+		now(),
+		now()
+	    )
+	</insert>
+	
+	<delete id="deleteAdminUser" parameterType="com.hishu.vacation.dto.AdminUser">
+	    delete from t_admin_user
+	    where id=#{id}
+	</delete>
+	
+	<update id="updateAdminUser" parameterType="com.hishu.vacation.dto.AdminUser">
+	    update t_admin_user
+	    set update_time=now()
+	    <if test="name!=null and name!=''">
+	    ,name=#{name}
+	    </if>
+	    <if test="password!=null and password!=''">
+	    ,password=#{password}
+	    </if>
+	    <if test="status!=null">
+	    ,status=#{status}
+	    </if>
+	    <if test="roleId!=null">
+	    ,role_id=#{roleId}
+	    </if>
+	    where id=#{id}
+	</update>
+	
+	<select id="getAdminUser" parameterType="com.hishu.vacation.dto.AdminUser" resultType="com.hishu.vacation.dto.AdminUser">
+	    select 
+	    id,
+		name,
+		account,
+		password,
+		role_id as roleId,
+		status,
+		create_time as createTime,
+		update_time as updateTime
+	    
+	    from t_admin_user
+	    where 
+	    <if test="id!=null">
+	        id=#{id}
+	    </if>
+	    <if test="account!=null and account!=''">
+	        account=#{account}
+	        
+	        <if test="password!=null and password!=''">
+	        	and password=#{password}
+		    </if>
+	    	<if test="status!=null">
+	    		and status=#{status}
+	    	</if>
+	    </if>
+	</select>
+	
+	<sql id="getAdminUserListCondition">
+	    <if test="likeName!=null and likeName!=''">
+	        and name like concat('%',#{likeName},'%')
+	    </if>
+	    <if test="account!=null and account!=''">
+	        and account=#{account}
+	    </if>
+	    <if test="status!=null">
+	        and status=#{status}
+	    </if>
+	    <if test="roleId!=null">
+	        and role_id=#{roleId}
+	    </if>
+	</sql>
+	<select id="getAdminUserList" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.AdminUser">
+		select 
+		id,
+		name,
+		account,
+		password,
+		role_id as roleId,
+		status,
+		create_time as createTime,
+		update_time as updateTime
+		
+		from t_admin_user
+		where 1=1
+		<include refid="getAdminUserListCondition"></include>
+		order by update_time desc 
+		<if test="pageSize!=null and offset!=null">
+		limit #{offset},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="getAdminUserListCount" parameterType="java.util.Map" resultType="int">
+	    select count(1) as n
+		
+		from t_admin_user
+		where 1=1
+		<include refid="getAdminUserListCondition"></include>
+	</select>
+</mapper>

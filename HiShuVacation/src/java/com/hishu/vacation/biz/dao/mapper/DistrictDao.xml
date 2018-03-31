@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hishu.vacation.biz.dao.DistrictDao">
+	
+	<insert id="addDistrict" parameterType="com.hishu.vacation.dto.District">
+	    <selectKey resultType="int" keyProperty="id">
+			SELECT
+			LAST_INSERT_ID()
+		</selectKey>
+	    insert into t_district(
+		city_id,
+		code,
+		name,
+		longitude,
+		latitude,
+		introduce,
+		peripheral,
+		key_words,
+		tag_words,
+		seo_title,
+		create_time,
+		update_time
+	    )value(
+	    #{cityId},
+		#{code},
+		#{name},
+		#{longitude},
+		#{latitude},
+		#{introduce},
+		#{peripheral},
+		#{keyWords},
+		#{tagWords},
+		#{seoTitle},
+		now(),
+		now()
+	    )
+	</insert>
+	
+	<delete id="deleteDistrict" parameterType="com.hishu.vacation.dto.District">
+	    delete from t_district
+	    where id=#{id}
+	</delete>
+	
+	<update id="updateDistrict" parameterType="com.hishu.vacation.dto.District">
+	    update t_district
+	    set update_time=now()
+	    <if test="name!=null and name!=''">
+	    ,name=#{name}
+	    </if>
+	    <if test="cityId!=null">
+	    ,city_id=#{cityId}
+	    </if>
+	    <if test="code!=null and code!=''">
+	    ,code=#{code}
+	    </if>
+	    <if test="longitude!=null and longitude!=''">
+	    ,longitude=#{longitude}
+	    </if>
+	    <if test="latitude!=null and latitude!=''">
+	    ,latitude=#{latitude}
+	    </if>
+	    <if test="introduce!=null and introduce!=''">
+	    ,introduce=#{introduce}
+	    </if>
+	    <if test="peripheral!=null and peripheral!=''">
+	    ,peripheral=#{peripheral}
+	    </if>
+	    <if test="keyWords!=null and keyWords!=''">
+	    ,key_words=#{keyWords}
+	    </if>
+	    <if test="tagWords!=null and tagWords!=''">
+	    ,tag_words=#{tagWords}
+	    </if>
+	    <if test="seoTitle!=null and seoTitle!=''">
+	    ,seo_title=#{seoTitle}
+	    </if>
+	    
+	    where id=#{id}
+	</update>
+	
+	<select id="getDistrict" parameterType="com.hishu.vacation.dto.District" resultType="com.hishu.vacation.dto.District">
+	    select 
+	    id,
+		city_id as cityId,
+		code,
+		name,
+		longitude,
+		latitude,
+		introduce,
+		peripheral,
+		key_words as keyWords,
+		tag_words as tagWords,
+		seo_title as seoTitle,
+		create_time as createTime,
+		update_time as updateTime
+	    
+	    from t_district
+	    where id=#{id}
+	</select>
+	
+	<sql id="getDistrictListCondition">
+	    <if test="likeName!=null and likeName!=''">
+	        and name like concat('%',#{likeName},'%')
+	    </if>
+	    <if test="cityId!=null">
+	        and city_id=#{cityId}
+	    </if>
+	    <if test="code!=null and code!=''">
+	        and code=#{code}
+	    </if>
+	</sql>
+	<select id="getDistrictList" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.District">
+	    select 
+	    id,
+		city_id as cityId,
+		code,
+		name,
+		longitude,
+		latitude,
+		introduce,
+		peripheral,
+		key_words as keyWords,
+		tag_words as tagWords,
+		seo_title as seoTitle,
+		create_time as createTime,
+		update_time as updateTime
+		
+	    from t_district
+	    where 1=1
+	    <include refid="getDistrictListCondition"></include>
+	    order by update_time desc
+	    <if test="offset!=null and pageSize!=null">
+		limit #{offset},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="getDistrictListCount" parameterType="java.util.Map" resultType="int">
+	    select count(1) as n
+		
+	    from t_district
+	    where 1=1
+	    <include refid="getDistrictListCondition"></include>
+	</select>
+	
+	<select id="getDistrictHouseList" parameterType="java.util.Map" resultType="java.util.Map">
+	    select 
+		td.id as districtId,
+		td.`name` as districtName,
+		tc.`name` as cityName,
+		count(th.id) as houseCount
+		
+		from t_district td
+		inner join t_city tc on tc.id=td.city_id
+		left join t_house th on th.district_id=td.id
+		
+		where 1=1
+		<if test="districtId!=null">
+		    and td.id=#{districtId}
+		</if>
+		<if test="cityId!=null">
+		    and tc.id=#{cityId}
+		</if>
+		group by td.id
+	</select>
+	
+	<select id="getDistrictHouseListCount" parameterType="java.util.Map" resultType="int">
+		select count(1) as n
+		from (
+		    select 
+			td.id as districtId,
+			td.`name` as districtName,
+			tc.`name` as cityName,
+			count(th.id) as houseCount
+			
+			from t_district td
+			inner join t_city tc on tc.id=td.city_id
+			left join t_house th on th.district_id=td.id
+			
+			where 1=1
+			<if test="districtId!=null">
+			    and td.id=#{districtId}
+			</if>
+			<if test="cityId!=null">
+			    and tc.id=#{cityId}
+			</if>
+			group by td.id
+		) T
+	</select>
+	
+	<insert id="addDistrictImg" parameterType="com.hishu.vacation.dto.DistrictImg">
+	    insert into t_district_img(
+		district_id,
+		type,
+		url,
+		create_time,
+		update_time
+		)
+		value(
+		#{districtId},
+		#{type},
+		#{url},
+		now(),
+		now()
+		)
+	</insert>
+	<delete id="deleteDistrictImg" parameterType="com.hishu.vacation.dto.DistrictImg">
+	    delete from t_district_img
+	    where
+	    <if test="id!=null">
+	    id=#{id}   
+	    </if>
+	    <if test="districtId!=null">
+	    district_id=#{districtId}
+	    </if>
+	</delete>
+	<update id="updateDistrictImg" parameterType="com.hishu.vacation.dto.DistrictImg">
+	    update t_district_img
+	    set update_time=now()
+	    <if test="type!=null and type!=''">
+	    ,type=#{type}
+	    </if>
+	    <if test="url!=null and url!=''">
+	    ,url=#{url}
+	    </if>
+	    
+	    where id=#{id}
+	</update>
+	
+	<select id="getDistrictImg" parameterType="com.hishu.vacation.dto.DistrictImg" resultType="com.hishu.vacation.dto.DistrictImg">
+	    select 
+	    id,
+		district_id as districtId,
+		type,
+		url,
+		create_time as createTime,
+		update_time as updateTime
+			    
+	    from t_district_img
+	    where id=#{id}
+	</select>
+	
+	<sql id="getDistrictImgListCondition">
+	    <if test="districtId!=null">
+	        and district_id=#{districtId}
+	    </if>
+	    <if test="type!=null and type!=''">
+	        and type=#{type}
+	    </if>
+	</sql>
+	<select id="getDistrictImgList" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.DistrictImg">
+	    select 
+	    id,
+		district_id as districtId,
+		type,
+		url,
+		create_time as createTime,
+		update_time as updateTime
+			    
+	    from t_district_img
+	    where 1=1
+	    <include refid="getDistrictImgListCondition"></include>
+	    order by update_time desc
+	    <if test="offset!=null and pageSize!=null">
+		limit #{offset},#{pageSize}
+		</if>
+	</select>
+	<select id="getDistrictImgListCount" parameterType="java.util.Map" resultType="int">
+	    select count(1) as n
+			    
+	    from t_district_img
+	    where 1=1
+	    <include refid="getDistrictImgListCondition"></include>
+	</select>
+	
+</mapper>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hishu.vacation.biz.dao.HouseImgDao">
+	
+	<insert id="addHouseImg" parameterType="com.hishu.vacation.dto.HouseImg">
+	    insert into t_house_img(
+		url,
+		house_id,
+		type,
+		create_time,
+		update_time
+	    )value(
+	    #{url},
+		#{houseId},
+		#{type},
+		now(),
+		now()
+	    )
+	</insert>
+	
+	<delete id="deleteHouseImg" parameterType="com.hishu.vacation.dto.HouseImg">
+	    delete from t_house_img
+	    where id=#{id}
+	</delete>
+	
+	<delete id="deleteHouseImgGroup" parameterType="com.hishu.vacation.dto.HouseImg">
+	    delete from t_house_img
+	    where house_id=#{houseId}
+	</delete>
+	
+	<update id="updateHouseImg" parameterType="com.hishu.vacation.dto.HouseImg">
+	    update t_house_img
+	    set update_time=now()
+	    <if test="url!=null and url!=''">
+	    ,url=#{url}
+	    </if>
+	    where id=#{id}
+	</update>
+	
+	<select id="getHouseImg" parameterType="com.hishu.vacation.dto.HouseImg" resultType="com.hishu.vacation.dto.HouseImg">
+	    select 
+	    id,
+		url,
+		house_id,
+		type,
+		create_time,
+		update_time
+			    
+	    from t_house_img
+	    where id=#{id}
+	</select>
+	
+	<sql id="getHouseImgListCondition">
+	    <if test="houseId!=null">
+	        and house_id=#{houseId}
+	    </if>
+	</sql>
+	<select id="getHouseImgList" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.HouseImg">
+	    select 
+	    id,
+		url,
+		house_id as houseId,
+		type,
+		create_time as createTime,
+		update_time as updateTime
+
+	    from t_house_img
+	    where 1=1
+	    <include refid="getHouseImgListCondition"></include>
+	    order by update_time desc
+	    <if test="pageSize!=null and offset!=null">
+		limit #{offset},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="getHouseImgListCount" parameterType="java.util.Map" resultType="int">
+	    select count(1) as n
+		
+	    from t_house_img
+	    where 1=1
+	    <include refid="getHouseImgListCondition"></include>
+	</select>
+</mapper>

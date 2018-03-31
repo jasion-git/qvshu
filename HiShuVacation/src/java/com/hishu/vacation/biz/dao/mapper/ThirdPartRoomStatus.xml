@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hishu.vacation.biz.dao.ThirdPartRoomStatusDao">
+	
+	<insert id="addThirdPartRoomStatus" parameterType="com.hishu.vacation.dto.ThirdPartRoomStatus">
+	    insert into t_third_part_room_status(
+	    third_part_id,
+	    date,
+	    room_name,
+	    `status`,
+	    source,
+	    create_time,
+	    update_time
+	    ) value(
+	    #{thirdPartId},
+	    #{date},
+	    #{roomName},
+	    #{status},
+	    #{source},
+	    NOW(),
+	    NOW()
+	    )
+		ON DUPLICATE KEY UPDATE `status`=#{status}
+	</insert>
+	
+	<delete id="deleteThirdPartRoomStatus" parameterType="com.hishu.vacation.dto.ThirdPartRoomStatus">
+	    delete from t_third_part_room_status
+	    where id=#{id}
+	</delete>
+	
+	<update id="updateThirdPartRoomStatus" parameterType="com.hishu.vacation.dto.ThirdPartRoomStatus">
+	    update t_third_part_room_status
+	    set update_time=now()
+	    <if test="roomName!=null and roomName!=''">
+	    ,room_name=#{rommName}    
+	    </if>
+	    <if test="status!=null">
+	    ,status=#{status}
+	    </if>
+	    where id=#{id}
+	</update>
+	
+	<select id="getThirdPartRoomStatus" parameterType="com.hishu.vacation.dto.ThirdPartRoomStatus" resultType="com.hishu.vacation.dto.ThirdPartRoomStatus">
+	    select 
+	    id,
+		third_part_id as thirdPartId,
+		room_name as roomName,
+		date,
+		status,
+		source,
+		create_time as createTime,
+		update_time as updateTime
+			    
+	    from t_third_part_room_status
+	    where 
+	    <if test="id!=null">
+	        id=#{id}
+	    </if>
+	    <if test="thirdPartId!=null and thirdPartId!='' and date!=''">
+	        third_part_id=#{thirdPartId}
+	        and date=#{date}
+	    </if>
+	</select>
+	
+	<sql id="getThirdPartRoomStatusListCondition">
+	    <if test="likeRoomName!=null and likeRoomName!=''">
+	        and room_name like concat('%',#{likeRoomName},'%')
+	    </if>
+	    <if test="thirdPartId!=null and thirdPartId!=''">
+	        and third_part_id=#{thirdPartId}
+	    </if>
+	    <if test="date!=null">
+	        and date=#{date}
+	    </if>
+	    <if test="status!=null">
+			and status=#{status}	        
+	    </if>
+	    <if test="source!=null and source!=''">
+	        and source=#{source}
+	    </if>
+	</sql>
+	<select id="getThirdPartRoomStatusList" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.ThirdPartRoomStatus">
+	    select 
+	    id,
+		third_part_id as thirdPartId,
+		room_name as roomName,
+		date,
+		status,
+		source,
+		create_time as createTime,
+		update_time as updateTime
+		
+	    from t_third_part_room_status
+	    where 1=1
+	    <include refid="getThirdPartRoomStatusListCondition"></include>
+	    order by update_time desc
+	    <if test="pageSize!=null and offset!=null">
+		limit #{offset},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="getThirdPartRoomStatusListCount" parameterType="java.util.Map" resultType="int">
+	    select count(1) as n
+		
+	    from t_third_part_room_status
+	    where 1=1
+	    <include refid="getThirdPartRoomStatusListCondition"></include>
+	</select>
+	
+	<select id="getThirdPartHouseList" parameterType="java.util.Map" resultType="java.util.Map">
+	    select 
+	    third_part_id as thirdPartId,
+	    room_name as name 
+	    
+	    from t_third_part_room_status
+		GROUP BY source,third_part_id
+	</select>
+</mapper>

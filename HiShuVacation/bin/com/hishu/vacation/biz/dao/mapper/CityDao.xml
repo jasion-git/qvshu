@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hishu.vacation.biz.dao.CityDao">
+	
+	<insert id="addCity" parameterType="com.hishu.vacation.dto.City">
+	    insert into t_city(
+		name,
+		code,
+		province_id,
+		create_time,
+		update_time
+	    )value(
+	    #{name},
+		#{code},
+		#{provinceId},
+		now(),
+		now()
+	    )
+	</insert>
+	
+	<delete id="deleteCity" parameterType="com.hishu.vacation.dto.City">
+	    delete from t_city
+	    where id=#{id}
+	</delete>
+	
+	<update id="updateCity" parameterType="com.hishu.vacation.dto.City">
+	    update t_city
+	    set update_time=now()
+	    <if test="name!=null and name!=''">
+	    ,name=#{name}
+	    </if>
+	    <if test="code!=null and code!=''">
+	    ,code=#{code}
+	    </if>
+	    <if test="provinceId!=null">
+	    ,province_id=#{provinceId}
+	    </if>
+	    
+	    where id=#{id}
+	</update>
+	
+	<select id="getCity" parameterType="com.hishu.vacation.dto.City" resultType="com.hishu.vacation.dto.City">
+	    select 
+	    id,
+		name,
+		code,
+		province_id as provinceId,
+		create_time as createTime,
+		update_time as updateTime
+	    
+	    from t_city
+	    where id=#{id}
+	</select>
+	
+	<sql id="getCityListCondition">
+	    <if test="likeName!=null and likeName!=''">
+	        and name like concat('%',#{likeName},'%')
+	    </if>
+	    <if test="code!=null and code!=''">
+	        and code=#{code}
+	    </if>
+	    <if test="provinceId!=null">
+	      	and province_id=#{provinceId}
+	    </if>
+	</sql>
+	<select id="getCityList" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.City">
+	    select 
+	    id,
+		name,
+		code,
+		province_id as provinceId,
+		create_time as createTime,
+		update_time as updateTime
+	    
+	    from t_city
+	    where 1=1
+	    <include refid="getCityListCondition"></include>
+	    order by update_time desc
+	    <if test="pageSize!=null and offset!=null">
+	    limit #{offset},#{pageSize}
+	    </if>
+	</select>
+	
+	<select id="getCityListCount" parameterType="java.util.Map" resultType="int">
+	    select count(1) as n
+	    
+	    from t_city
+	    where 1=1
+	    <include refid="getCityListCondition"></include>
+	</select>
+	
+	
+</mapper>

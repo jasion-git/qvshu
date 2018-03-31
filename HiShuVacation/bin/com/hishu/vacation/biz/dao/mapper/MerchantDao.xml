@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hishu.vacation.biz.dao.MerchantDao">
+	
+    <insert id="addMerchant" parameterType="com.hishu.vacation.dto.Merchant">
+        <selectKey resultType="int" keyProperty="id">
+			SELECT
+			LAST_INSERT_ID()
+		</selectKey>
+		insert into t_merchant(
+		account,
+		name,
+		sex,
+		cancel_book_type,
+		province_id,
+		city_id,
+		cancel_book_des,
+		book_instruction,
+		bank_remark,
+		bank_settlement,
+		bank_account,
+		bank_sub_bank,
+		bank_province,
+		bank_phone,
+		bank_name,
+		district_id,
+		create_time,
+		update_time
+		)value(
+		#{account},
+		#{name},
+		#{sex},
+		#{cancelBookType},
+		#{provinceId},
+		#{cityId},
+		#{cancelBookDes},
+		#{bookInstruction},
+		#{bankRemark},
+		#{bankSettlement},
+		#{bankAccount},
+		#{bankSubBank},
+		#{bankProvince},
+		#{bankPhone},
+		#{bankName},
+		#{districtId},
+		now(),
+		now()
+		)
+    </insert>
+    
+    <delete id="deleteMerchant" parameterType="com.hishu.vacation.dto.Merchant">
+        delete from t_merchant
+        where id=#{id}
+    </delete>
+    
+    <update id="updateMerchant" parameterType="com.hishu.vacation.dto.Merchant">
+        update t_merchant set update_time=now()
+        <if test="name!=null and name!=''">
+        ,name=#{name}
+        </if>
+        <if test="cancelBookType!=null">
+        ,cancel_book_type=#{cancelBookType}
+        </if>
+        <if test="provinceId!=null">
+        ,province_id=#{provinceId}
+        </if>
+        <if test="cityId!=null">
+        ,city_id=#{cityId}
+        </if>
+        <if test="districtId!=null">
+        ,district_id=#{districtId}
+        </if>
+        <if test="cancelBookDes!=null and cancelBookDes!=''">
+        ,cancel_book_des=#{cancelBookDes}
+        </if>
+        <if test="bookInstruction!=null and bookInstruction!=''">
+        ,book_instruction=#{bookInstruction}
+        </if>
+        <if test="bankRemark!=null and bankRemark!=''">
+        ,bank_remark=#{bankRemark}
+        </if>
+        <if test="bankSettlement!=null">
+        ,bank_settlement=#{bankSettlement}
+        </if>
+        <if test="bankAccount!=null and bankAccount!=''">
+        ,bank_account=#{bankAccount}
+        </if>
+        <if test="bankSubBank!=null and bankSubBank!=''">
+        ,bank_sub_bank=#{bankSubBank}
+        </if>
+        <if test="bankProvince!=null and bankProvince!=''">
+        ,bank_province=#{bankProvince}
+        </if>
+        <if test="bankPhone!=null and bankPhone!=''">
+        ,bank_phone=#{bankPhone}
+        </if>
+        <if test="bankName!=null and bankName!=''">
+        ,bank_name=#{bankName}
+        </if>
+        
+        where id=#{id}
+    </update>
+    
+    <select id="getMerchant" parameterType="com.hishu.vacation.dto.Merchant" resultType="com.hishu.vacation.dto.Merchant">
+        select
+        id,
+		account,
+		name,
+		sex,
+		cancel_book_type as cancelBookType,
+		province_id as provinceId,
+		city_id as cityId,
+		district_id as districtId,
+		cancel_book_des as cancelBookDes,
+		book_instruction as bookInstruction,
+		bank_remark as bankRemark,
+		bank_settlement as bankSettlement,
+		bank_account bankAccount,
+		bank_sub_bank as bankSubBank,
+		bank_province as bankProvince,
+		bank_phone as bankPhone,
+		bank_name as bankName,
+		create_time as createTime,
+		update_time as updateTime
+        
+        from t_merchant
+        where id=#{id}
+    </select>
+    
+    <sql id="getMerchantListCondition">
+    	<if test="account!=null and account!=''">
+    	    and account=#{account}
+    	</if>
+    	<if test="likeName!=null and likeName!=''">
+    	    and name like concat('%',#{likeName},'%')
+    	</if>
+    	<if test="sex!=null">
+    	    and sex=#{sex}
+    	</if>
+    	<if test="cancelBookType!=null">
+    	    and cancel_book_type=#{cancelBookType}
+    	</if>
+    	<if test="provinceId!=null">
+    	    and province_id=#{provinceId}
+    	</if>
+    	<if test="cityId!=null">
+    	    and city_id=#{cityId}
+    	</if>
+    	<if test="districtId!=null">
+    	    and district_id=#{districtId}
+    	</if>
+    	<if test="bankSettlement!=null">
+    	    and bank_settlement=#{bankSettlement}
+    	</if>
+    	<if test="bankAccount!=null and bankAccount!=''">
+    	    and bank_account=#{bankAccount}
+    	</if>
+    	<if test="bankSubBank!=null and bankSubBank!=''">
+    	    and bank_sub_bank=#{bankSubBank}
+    	</if>
+    	<if test="bankProvince!=null and bankProvince!=''">
+    	    and bank_province=#{bankProvince}
+    	</if>
+    	<if test="bankPhone!=null and bankPhone!=''">
+    	    and bank_phone=#{bankPhone}
+    	</if>
+    	<if test="bankName!=null and bankName!=''">
+    	    and bank_name=#{bankName}
+    	</if>
+    </sql>
+    
+    <select id="getMerchantList" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.Merchant">
+        select 
+        tm.id,
+		tm.account,
+		tm.name,
+		tm.sex,
+		tm.cancel_book_type as cancelBookType,
+		tm.province_id as provinceId,
+		tm.city_id as cityId,
+		tm.district_id as districtId,
+		tm.cancel_book_des as cancelBookDes,
+		tm.book_instruction as bookInstruction,
+		tm.bank_remark as bankRemark,
+		tm.bank_settlement as bankSettlement,
+		tm.bank_account bankAccount,
+		tm.bank_sub_bank as bankSubBank,
+		tm.bank_province as bankProvince,
+		tm.bank_phone as bankPhone,
+		tm.bank_name as bankName,
+		tm.create_time as createTime,
+		tm.update_time as updateTime,
+		
+		tc.name as cityName,
+		td.name as districtName
+		
+        from t_merchant tm
+        left join t_city tc on tc.id=tm.city_id
+        left join t_district td on td.id=tm.district_id and td.city_id=tc.id
+        where 1=1
+        <include refid="getMerchantListCondition"></include>
+        order by tm.update_time desc
+        <if test="offset!=null and pageSize!=null">
+		limit #{offset},#{pageSize}
+		</if>
+    </select>
+    
+    <select id="getMerchantListCount" parameterType="java.util.Map" resultType="int">
+        select count(1) n
+		
+        from t_merchant tm
+        where 1=1
+        <include refid="getMerchantListCondition"></include>
+    </select>
+	
+    <insert id="addMerchantContact" parameterType="com.hishu.vacation.dto.MerchantContact">
+       	insert into t_merchant_contact(
+		merchant_id,
+		type,
+		name,
+		phone,
+		district_id,
+		update_time,
+		create_time
+        )value(
+        #{merchantId},
+		#{type},
+		#{name},
+		#{phone},
+		#{districtId},
+		now(),
+		now()
+        )
+    </insert>
+    <delete id="batchDeleteMerchantContact" parameterType="com.hishu.vacation.dto.MerchantContact">
+        delete from t_merchant_contact
+        where merchant_id=#{merchantId}
+    </delete>
+    <select id="getMerchantContactList" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.MerchantContact">
+        select
+        id,
+        merchant_id as merchantId,
+		type,
+		name,
+		phone,
+		district_id as districtId,
+		update_time as updateTime,
+		create_time as createTime
+		
+        from t_merchant_contact
+        where merchant_id=#{merchantId}
+    </select>
+    
+    
+</mapper>

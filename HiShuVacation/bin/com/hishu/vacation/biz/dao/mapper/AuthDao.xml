@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hishu.vacation.biz.dao.AuthDao">
+	
+	<insert id="addAuth" parameterType="com.hishu.vacation.dto.Auth">
+	    insert into t_auth(
+		name,
+		code,
+		create_time,
+		update_time
+	    )value(
+	    #{name},
+		#{code},
+		now(),
+		now()
+	    )
+	</insert>
+	
+	<delete id="deleteAuth" parameterType="com.hishu.vacation.dto.Auth">
+	    delete from t_auth
+	    where id=#{id}
+	</delete>
+	
+	<update id="updateAuth" parameterType="com.hishu.vacation.dto.Auth">
+	    update t_auth
+	    set update_time=now()
+	    <if test="name!=null and name!=''">
+	    ,name=#{name}
+	    </if>
+	    where id=#{id}
+	</update>
+	
+	<select id="getAuth" parameterType="com.hishu.vacation.dto.Auth" resultType="com.hishu.vacation.dto.Auth">
+	    select 
+	    id,
+		name,
+		code,
+		create_time as createTime,
+		update_time as updateTime
+			    
+	    from t_auth
+	    where id=#{id}
+	</select>
+	
+	<sql id="getAuthListCondition">
+	    <if test="likeName!=null and likeName!=''">
+	        and name like concat('%',#{likeName},'%')
+	    </if>
+	    <if test="code!=null and code!=''">
+	        and code=#{code}
+	    </if>
+	</sql>
+	<select id="getAuthList" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.Auth">
+	    select 
+	    id,
+		name,
+		code,
+		create_time as createTime,
+		update_time as updateTime
+		
+	    from t_auth
+	    where 1=1
+	    <include refid="getAuthListCondition"></include>
+	    order by update_time desc
+	    <if test="pageSize!=null and offset!=null">
+		limit #{offset},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="getAuthListCount" parameterType="java.util.Map" resultType="int">
+	    select count(1) as n
+		
+	    from t_auth
+	    where 1=1
+	    <include refid="getAuthListCondition"></include>
+	</select>
+</mapper>

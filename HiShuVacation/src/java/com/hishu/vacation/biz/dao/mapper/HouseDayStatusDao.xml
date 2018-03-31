@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hishu.vacation.biz.dao.HouseDayStatusDao">
+	
+	<insert id="addHouseDayStatus" parameterType="com.hishu.vacation.dto.HouseDayStatus">
+	    <selectKey resultType="int" keyProperty="id">
+			SELECT
+			LAST_INSERT_ID()
+		</selectKey>
+	    insert into t_house_day_status(
+		house_id,
+		date,
+		status,
+		operator_id,
+		create_time,
+		update_time
+	    )value(
+	   	#{houseId},
+		#{date},
+		#{status},
+		#{operatorId},
+		now(),
+		now()
+	    )
+	</insert>
+	
+	<delete id="deleteHouseDayStatus" parameterType="com.hishu.vacation.dto.HouseDayStatus">
+	    delete from t_house_day_status
+	    where id=#{id}
+	</delete>
+	
+	<delete id="deleteHouseDayStatusAfterHalfYear" parameterType="com.hishu.vacation.dto.HouseDayStatus">
+	    delete from t_house_day_status
+	    where create_time <![CDATA[ <=#{createTime} ]]>
+	</delete>
+	
+	<update id="updateHouseDayStatus" parameterType="com.hishu.vacation.dto.HouseDayStatus">
+	    update t_house_day_status
+	    set update_time=now()
+	    <if test="status!=null">
+	    ,status=#{status}
+	    </if>
+	    <if test="operatorId!=null">
+	    ,operator_id=#{operatorId}
+	    </if>
+	    <if test="orderId!=null">
+	    ,order_id=#{orderId}
+	    </if>
+	    where id=#{id}
+	</update>
+	
+	<update id="unbindHouseDayStatusOfOrder" parameterType="com.hishu.vacation.dto.HouseDayStatus">
+	    update t_house_day_status 
+	    set status=1,order_id=null,update_time=now()
+	    <if test="operatorId!=null">
+	    ,operator_id=#{operatorId}
+	    </if>
+	    where order_id=#{orderId}
+	</update>
+	
+	<select id="getHouseDayStatus" parameterType="com.hishu.vacation.dto.HouseDayStatus" resultType="com.hishu.vacation.dto.HouseDayStatus">
+	    select 
+	    id,
+		house_id as houseId,
+		date,
+		status,
+		create_time as createTime,
+		update_time as updateTime
+			    
+	    from t_house_day_status
+	    where 
+	    <if test="id!=null">
+	    id=#{id}    
+	    </if>
+	    <if test="houseId!=null and date!=null">
+	    house_id=#{houseId} and date=#{date}
+	    </if>
+	</select>
+	
+	<select id="getHouseDayStatusMap" parameterType="com.hishu.vacation.dto.HouseDayStatus" resultType="java.util.Map">
+	    select 
+		thds.id,
+		thds.house_id as houseId,
+		thds.date,
+		thds.status,
+		
+		thu.`name` as houseDayStatusOperatorName,
+		
+		tor.id as orderId,
+		DATE_FORMAT(tor.book_live_time,'%Y-%m-%d %H:%i:%s') as bookLiveTime,
+		DATE_FORMAT(tor.book_leave_time,'%Y-%m-%d %H:%i:%s') as bookLeaveTime,
+		
+		tou.id as orderOperatorId,
+		tou.name as orderOperatorName,
+		
+		tu.name as userName
+		
+		from t_house_day_status thds
+		left join t_admin_user thu on thu.id=thds.operator_id
+		left join t_order tor on tor.id=thds.order_id
+		left join t_admin_user tou on tou.id=tor.operator_id
+		left join t_user tu on tu.id=tor.user_id
+		
+		where thds.house_id=#{houseId} 
+		and thds.date=#{date}
+	</select>
+	
+	<sql id="getHouseDayStatusListCondition">
+	    <if test="houseId!=null">
+	        and house_id=#{houseId}
+	    </if>
+	    <if test="date!=null">
+	        and date=#{date}
+	    </if>
+	    <if test="status">
+	        and status=#{status}
+	    </if>
+	    <if test="startTime!=null">
+	        and date >=#{startTime}
+	    </if>
+	    <if test="endTime!=null">
+	        and date <![CDATA[ <=#{endTime}]]>
+	    </if>
+	</sql>
+	<select id="getHouseDayStatusList" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.HouseDayStatus">
+	    select 
+	    id,
+		house_id as houseId,
+		date,
+		status,
+		create_time as createTime,
+		update_time as updateTime
+		
+	    from t_house_day_status
+	    where 1=1
+	    <include refid="getHouseDayStatusListCondition"></include>
+	    order by date
+	    <if test="pageSize!=null and offset!=null">
+		limit #{offset},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="getHouseDayStatusListCount" parameterType="java.util.Map" resultType="int">
+	    select count(1) as n
+		
+	    from t_house_day_status
+	    where 1=1
+	    <include refid="getHouseDayStatusListCondition"></include>
+	</select>
+	
+	<!-- 查询房态 -->
+	<resultMap id="HouseDayStatuHouse" type="com.hishu.vacation.dto.HouseDayStatusHouse1"> 
+  		<id column="id" property="id" /> 
+  		<result column="name" property="name" />
+  		<result column="cityId" property="cityId" />
+  		<result column="districtId" property="districtId" />
+  		<result column="merchantId" property="merchantId" />
+  		<result column="cityName" property="cityName" />
+  		<result column="districtName" property="districtName" />
+  		<result column="merchantName" property="merchantName" /> 
+  		<collection property="statusList" javaType="ArrayList" ofType="com.hishu.vacation.dto.HouseDayStatusHouse2">
+  		    <result property="date" column="date" />
+  		    <result property="status" column="status" />
+  		    <result property="orderAmount" column="orderAmount" />
+  		</collection>
+ 	</resultMap>
+ 
+	<select id="getHouseStatusList" parameterType="java.util.Map" resultMap="HouseDayStatuHouse">
+		select
+		th.id,
+		th.name,
+		th.city_id as cityId,
+		th.district_id as districtId,
+		th.merchant_id merchantId,
+		
+		tc.name as cityName,
+		td.name as districtName,
+		tm.name as merchantName,
+		
+		thds.date,
+		thds.status,
+		
+		thdp.order_amount as orderAmount
+		
+		from t_house th
+		left join t_city tc on tc.id=th.city_id
+		left join t_district td on td.id=th.district_id and td.city_id=th.city_id
+		left join t_merchant tm on tm.id=th.merchant_id
+		left join t_house_day_status thds on thds.house_id=th.id 
+			<![CDATA[and thds.date >=#{startTime} and thds.date<=#{endTime} ]]>
+		left join t_house_day_price thdp on thdp.house_id=thds.house_id and thdp.`day`=thds.date
+		where 1=1
+		<if test="cityId!=null">
+		    and th.city_id=#{cityId}
+		</if>
+		<if test="districtId!=null">
+		    and th.district_id=#{districtId}
+		</if>
+		<if test="likeName!=null and likeName!=''">
+		    and th.name like concat('%',#{likeName},'%')
+		</if>
+		<if test="merchantName!=null and merchantName!=''">
+		    and tm.name like concat('%',#{merchantName},'%')
+		</if>
+		<if test="liveCount!=null">
+		    and th.live_count=#{liveCount}
+		</if>
+		<if test="roomCount!=null">
+		    and th.layout_room=#{roomCount}
+		</if>
+		
+		order by th.id,thds.date
+	</select>
+	
+	<select id="getHouseStatus" parameterType="java.util.Map" resultType="java.util.Map">
+	    select 
+	    thds.id,
+	    thds.status,
+	    tor.id as orderId,
+	    tor.type
+	    
+	    from t_house_day_status thds
+	    left join t_order tor on tor.house_id=thds.house_id and tor.book_time=thds.date
+	    where thds.house_id=#{houseId}
+	    and thds.date=#{date}
+	</select>
+	
+	<select id="getHouseDayStatusForLock" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.HouseDayStatus">
+	    select 
+	    id,
+	    status,
+	    `date`,
+	    house_id as houseId
+	    
+	    from t_house_day_status
+	    where house_id=#{houseId}
+	    and `date`>=#{startTime}
+	    and `date` <![CDATA[ <=#{endTime} ]]>
+	    for update
+	</select>
+</mapper>

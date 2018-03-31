@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hishu.vacation.biz.dao.CouponPackageDao">
+	<insert id="addCouponPackage" parameterType="com.hishu.vacation.dto.CouponPackage">
+	    <selectKey resultType="int" keyProperty="id">
+			SELECT
+			LAST_INSERT_ID()
+		</selectKey>
+		insert into t_coupon_package(
+		`name`,
+		type,
+		house_ids,
+		content,
+		start_time,
+		end_time,
+		count,
+		`condition`,
+		condition_value,
+		discount,
+		create_time,
+		update_time
+		)value(
+		#{name},
+		#{type},
+		#{houseIds},
+		#{content},
+		#{startTime},
+		#{endTime},
+		#{count},
+		#{condition},
+		#{conditionValue},
+		#{discount},
+		now(),
+		now()
+		)
+	</insert>
+	
+	<delete id="deleteCouponPackage" parameterType="com.hishu.vacation.dto.CouponPackage">
+	    delete from t_coupon_package
+	    where id=#{id}
+	</delete>
+	
+	<update id="updateCouponPackage" parameterType="com.hishu.vacation.dto.CouponPackage">
+	    update t_coupon_package
+	    set update_time=now()
+	    <if test="name!=null and name!=''">
+	    ,`name`=#{name}
+	    </if>
+	    <if test="houseIds!=null">
+	    ,house_ids=#{houseIds}
+	    </if>
+	    <if test="content!=null">
+	    ,content=#{content}
+	    </if>
+	    <if test="startTime!=null">
+	    ,start_time=#{startTime}
+	    </if>
+	    <if test="endTime!=null">
+	    ,end_time=#{endTime}
+	    </if>
+	    <if test="count!=null">
+	    ,count=#{count}
+	    </if>
+	    <if test="condition!=null and condition!=''">
+	    ,`condition`=#{condition}
+	    </if>
+	    <if test="conditionValue!=null and conditionValue!=''">
+	    ,condition_value=#{conditionValue}
+	    </if>
+	    <if test="discount!=null">
+	    ,discount=#{discount}
+	    </if>
+	    where id=#{id}
+	</update>
+	
+	<select id="getCouponPackage" parameterType="com.hishu.vacation.dto.CouponPackage" resultType="com.hishu.vacation.dto.CouponPackage">
+		select 
+		id,
+		`name`,
+		type,
+		house_ids as houseIds,
+		content,
+		count,
+		start_time as startTime,
+		end_time as endTime,
+		`condition`,
+		condition_value as conditionValue,
+		discount,
+		create_time as createTime,
+		update_time as updateTime
+				
+		from t_coupon_package
+		where id=#{id}
+	</select>
+	
+	<sql id="getCouponPackageListCondition">
+	    <if test="likeName!=null and likeName!=''">
+	        and tcp.`name` like concat('%',#{likeName},'%')
+	    </if>
+	    <if test="type!=null and type!=''">
+	        and tcp.type=#{type}
+	    </if>
+	    <if test="count!=null">
+	        and tcp.count=#{count}
+	    </if>
+	    <if test="startTime!=null">
+	        and tcp.start_time>=#{startTime}
+	    </if>
+	    <if test="endTime!=null">
+			and tcp.end_time <![CDATA[ <=#{endTime} ]]>    
+	    </if>
+	    <if test="discount!=null">
+	        and tcp.`discount`=#{discount}
+	    </if>
+	</sql>
+	<select id="getCouponPackageList" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.CouponPackage">
+	    select
+	    tcp.id,
+		tcp.`name`,
+		tcp.type,
+		tcp.house_ids as houseIds,
+		tcp.content,
+		tcp.count,
+		tcp.start_time as startTime,
+		tcp.end_time as endTime,
+		tcp.`condition`,
+		tcp.condition_value as conditionValue,
+		tcp.discount,
+		tcp.create_time as createTime,
+		tcp.update_time as updateTime
+		
+	    from t_coupon_package tcp
+	    where 1=1
+	    <include refid="getCouponPackageListCondition"></include>
+	    order by tcp.update_time desc
+	    <if test="pageSize!=null and offset!=null">
+	    limit #{offset},#{pageSize}
+	    </if>
+	</select>
+	
+	<select id="getCouponPackageListCount" parameterType="java.util.Map" resultType="int">
+	    select count(1) n
+	    from t_coupon_package tcp
+	    where 1=1
+	    <include refid="getCouponPackageListCondition"></include>
+	</select>
+	
+</mapper>

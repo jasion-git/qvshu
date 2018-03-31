@@ -1,0 +1,57 @@
+<project name="hishu" default="war" xmlns:ivy="antlib:org.apache.ivy.ant">
+	<property file="build.properties"/>
+	<property name="dir.classes" value="bin" />
+	<property name="dir.src" value="src/java" />
+	<property name="dir.webapp" value="src/webapp" />
+	<property name="dir.lib" value="src/webapp/WEB-INF/lib" />
+	<property name="dir.web.classes" value="src/webapp/WEB-INF/classes" />
+	<property name="dir.app.config" value="src/config" />
+	<property name="project.name" value="${war.name}" />
+	<path id="project.class.path">
+		<fileset dir="${dir.lib}">
+			<include name="**/*.jar" />
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${tomcat.home}/lib">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+	
+	<target name="init">
+		<mkdir dir="${dir.classes}"/>
+	</target>
+	<target name="compile" depends="init">
+		<mkdir dir="${dir.classes}"/>
+		<javac debug="true" deprecation="true" destdir="${dir.classes}" nowarn="false" source="1.7" target="1.7" includeantruntime="false">
+			<src path="${dir.src}" />
+			<compilerarg line="-encoding UTF-8 "/>
+			<classpath refid="project.class.path" />
+		</javac>
+		<copy todir="${dir.classes}">
+			<fileset dir="${dir.src}">
+				<exclude name="**/*.java"/>
+			</fileset>
+		</copy>
+	</target>
+	<target name="jar" depends="compile">
+		<jar destfile="${lib.dir}/${project.name}.jar">
+			<fileset dir="${dir.classes}">
+			    <include name="/com/**"/>
+			</fileset>
+		</jar>
+	</target>
+	<!-- 少一个war包-->
+	<target name="war" depends="jar">
+		<copy todir="${dir.web.classes}">
+			<fileset dir="${dir.app.config}">
+			</fileset>
+		</copy>
+		<war basedir="${dir.webapp}" destfile="${war.dest.dir}${war.name}.war">
+			<manifest>
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Built-Date" value="${dstamp}"/>
+				<attribute name="Specification-Vendor" value="inc"/>
+			</manifest>
+		</war>	
+	</target>
+</project>

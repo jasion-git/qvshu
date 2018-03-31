@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hishu.vacation.biz.dao.OrderDao">
+	
+	<insert id="addOrder" parameterType="com.hishu.vacation.dto.Order">
+	    <selectKey resultType="int" keyProperty="id">
+			SELECT
+			LAST_INSERT_ID()
+		</selectKey>
+	    insert into t_order(
+		order_no,
+		payment_status,
+		order_status,
+		live_status,
+		financial_status,
+		type,
+		house_id,
+		house_type,
+		user_name,
+		remark,
+		book_payment_time,
+		user_account,
+		book_payment_type,
+		book_get_amount,
+		book_type,
+		book_discount_amount,
+		book_collection_amount,
+		book_amount,
+		book_leave_time,
+		book_live_time,
+		book_time,
+		house_book_count,
+		user_phone,
+		house_district_id,
+		house_district,
+		house_name,
+		user_id,
+		operator_id,
+		create_time,
+		update_time
+	    )value(
+	    #{orderNo},
+		#{paymentStatus},
+		#{orderStatus},
+		#{liveStatus},
+		#{financialStatus},
+		#{type},
+		#{houseId},
+		#{houseType},
+		#{userName},
+		#{remark},
+		#{bookPaymentTime},
+		#{userAccount},
+		#{bookPaymentType},
+		#{bookGetAmount},
+		#{bookType},
+		#{bookDiscountAmount},
+		#{bookCollectionAmount},
+		#{bookAmount},
+		#{bookLeaveTime},
+		#{bookLiveTime},
+		#{bookTime},
+		#{houseBookCount},
+		#{userPhone},
+		#{houseDistrictId},
+		#{houseDistrict},
+		#{houseName},
+		#{userId},
+		#{operatorId},
+		now(),
+		now()
+	    )
+	</insert>
+	
+	<update id="deleteOrder" parameterType="com.hishu.vacation.dto.Order">
+	    update t_order set update_time=now(),order_status=5,operator_id=#{operatorId}
+	    where id=#{id}
+	</update>
+	
+	<update id="updateOrder" parameterType="com.hishu.vacation.dto.Order">
+	    update t_order
+	    set update_time=now()
+	    <if test="orderStatus!=null and orderStatus!=4">
+	    ,order_status=#{orderStatus}
+	    </if>
+	    <if test="paymentStatus!=null">
+	    ,payment_status=#{paymentStatus}
+	    </if>
+	    <if test="liveStatus!=null">
+	    ,live_status=#{liveStatus}
+	    </if>
+	    <if test="financialStatus!=null">
+	    ,financial_status=#{financialStatus}
+	    </if>
+	    <if test="houseType!=null and houseType!=''">
+	    ,house_type=#{houseType}
+	    </if>
+	    <if test="userName!=null and userName!=''">
+	    ,user_name=#{userName}
+	    </if>
+	    <if test="remark!=null and remark!=''">
+	    ,remark=#{remark}
+	    </if>
+	    <if test="bookPaymentTime!=null">
+	    ,book_payment_time=#{bookPaymentTime}
+	    </if>
+	    <if test="userAccount!=null and userAccount!=''">
+	    ,user_account=#{userAccount}
+	    </if>
+	    <if test="bookPaymentType!=null and bookPaymentType!=''">
+	    ,book_payment_type=#{bookPaymentType}
+	    </if>
+		<if test="bookGetAmount!=null">
+		,book_get_amount=#{bookGetAmount}
+		</if>
+		<if test="bookType!=null">
+		,book_type=#{bookType}
+		</if>
+		<if test="bookDiscountAmount!=null">
+		,book_discount_amount=#{bookDiscountAmount}
+		</if>
+		<if test="bookCollectionAmount!=null">
+		,book_collection_amount=#{bookCollectionAmount}
+		</if>
+		<if test="bookTime!=null">
+		,book_time=#{bookTime}
+		</if>
+		<if test="houseBookCount!=null">
+		,house_book_count=#{houseBookCount}
+		</if>
+		<if test="userPhone!=null and userPhone!=''">
+		,user_phone=#{userPhone}
+		</if>
+		<if test="houseDistrictId!=null">
+		,house_district_id=#{houseDistrictId}
+		</if>
+		<if test="houseDistrict!=null and houseDistrict!=''">
+		,house_district=#{houseDistrict}
+		</if>
+		<if test="houseName!=null and houseName!=''">
+		,house_name=#{houseName}
+		</if>
+		<if test="operatorId!=null">
+		,operator_id=#{operatorId}
+		</if>
+	    where id=#{id}
+	</update>
+	
+	<select id="getOrder" parameterType="com.hishu.vacation.dto.Order" resultType="com.hishu.vacation.dto.Order">
+	    select 
+	    tor.id,
+		tor.order_no as orderNo,
+		tor.payment_status as paymentStatus,
+		tor.order_status as orderStatus,
+		tor.live_status as liveStatus,
+		tor.financial_status as financialStatus,
+		tor.type,
+		tor.house_id as houseId,
+		tor.house_type as houseType,
+		tor.user_name as userName,
+		tor.remark,
+		tor.book_payment_time as bookPaymentTime,
+		tor.user_account as userAccount,
+		tor.book_payment_type as bookPaymentType,
+		tor.book_get_amount as bookGetAmount,
+		tor.book_type as bookType,
+		tor.book_discount_amount as bookDiscountAmount,
+		tor.book_collection_amount as bookCollectionAmount,
+		tor.book_amount as bookAmount,
+		tor.book_leave_time as bookLeaveTime,
+		tor.book_live_time as bookLiveTime,
+		tor.book_time as bookTime,
+		tor.house_book_count as houseBookCount,
+		tor.user_phone as userPhone,
+		tor.house_district_id as houseDistrictId,
+		tor.house_district as houseDistrict,
+		tor.house_name as houseName,
+		tor.user_id as userId,
+		tor.operator_id as operatorId,
+		tor.create_time as createTime,
+		tor.update_time as updateTime
+			    
+	    from t_order tor
+	    where id=#{id}
+	</select>
+	
+	<sql id="getOrderListCondition">
+	    <if test="paymentStatus!=null">
+	        and tor.payment_status=#{paymentStatus}
+	    </if>
+	    <if test="paymentStatusList!=null">
+	        and tor.payment_status in
+	        <foreach collection="paymentStatusList" item="obj" index="index" separator="," open="(" close=")">
+	            #{obj}
+	        </foreach>
+	    </if>
+	    <if test="orderStatus!=null">
+	        and tor.order_status=#{orderStatus}
+	    </if>
+	    <if test="orderStatusList!=null">
+	        and tor.order_status in
+	        <foreach collection="orderStatusList" item="obj" index="index" separator="," open="(" close=")">
+	            #{obj}
+	        </foreach>
+	    </if>
+	    <if test="financialStatus!=null">
+	        and tor.financial_status=#{financialStatus}
+	    </if>
+	    <if test="financialStatusList!=null">
+	        and tor.financial_status in
+	        <foreach collection="financialStatusList" item="obj" index="index" separator="," open="(" close=")">
+	            #{obj}
+	        </foreach>
+	    </if>
+	    <if test="liveStatus!=null">
+	        and tor.live_status=#{liveStatus}
+	    </if>
+	    <if test="liveStatusList!=null">
+	        and tor.live_status in
+	        <foreach collection="liveStatusList" item="obj" index="index" separator="," open="(" close=")">
+	            #{obj}
+	        </foreach>
+	    </if>
+	    <if test="orderNo!=null and orderNo!=''">
+	        and tor.order_no=#{orderNo}
+	    </if>
+	    <if test="bookTime!=null">
+	        and tor.book_time=#{bookTime}
+	    </if>
+	    <if test="bookLiveTime!=null">
+	        and tor.book_live_time=#{bookLiveTime}
+	    </if>
+	    <if test="userName!=null and userName!=''">
+	        and (tor.user_name=#{userName} or tu.name=#{userName})
+	    </if>
+	    <if test="userPhone!=null and userPhone!=''">
+	        and (tor.user_phone=#{userPhone} or tu.phone=#{phone})
+	    </if>
+	    <if test="houseName!=null and houseName!=''">
+	        and th.name=#{houseName}
+	    </if>
+	    <if test="merchantName!=null and merchantName!=''">
+	        and tm.name=#{merchantName}
+	    </if>
+	    <if test="districtName!=null and districtName!=''">
+	        and td.name=#{districtName}
+	    </if>
+	    <if test="operatorName!=null and operatorName!=''">
+	        and tau.name=#{operatorName}
+	    </if>
+	    
+	</sql>
+	<select id="getOrderList" parameterType="java.util.Map" resultType="java.util.Map">
+	    select 
+	    tor.id,
+	    tor.order_no as orderNo,
+	    tor.payment_status as paymentStatus,
+	    tor.financial_status as financialStatus,
+	    DATE_FORMAT(tor.book_time,'%Y-%m-%d %H:%i:%s') as bookTime,
+	    tor.house_id as houseId,
+	    tor.book_amount as bookAmount,
+	    tor.book_get_amount as bookGetAmount,
+	    tor.book_discount_amount as bookDiscountAmount,
+	    tor.house_book_count as houseBookCount,
+	    DATE_FORMAT(tor.book_live_time,'%Y-%m-%d %H:%i:%s') as bookLiveTime,
+	    DATE_FORMAT(tor.book_leave_time,'%Y-%m-%d %H:%i:%s') as bookLeaveTime,
+	    tor.type,
+	    tor.book_payment_type as bookPaymentType,
+	    tor.user_name as userName2,
+	    tor.user_account as userAccount2,
+	    tor.user_phone as userPhone2,
+	    tor.house_district as houseDistrict2,
+	    tor.house_name as houseName2,
+	    
+		tau.name as operatorName,
+		
+		tu.name as userName,
+		tu.account as userAccount,
+		tu.phone as userPhone,
+		
+		th.name as houseName,
+		th.offline_no as offlineNo,
+		
+		tm.name as merchantName,
+		tm.bank_settlement as bankSettlement
+		
+	    from t_order tor
+	    left join t_admin_user tau on tau.id=tor.operator_id
+	    left join t_user tu on tu.id=tor.user_id
+	    left join t_house th on th.id=tor.house_id
+	    left join t_district td on td.id=th.district_id
+	    left join t_merchant tm on tm.id=th.merchant_id
+	    
+	    where 1=1
+	    <include refid="getOrderListCondition"></include>
+	    order by tor.update_time desc
+	    <if test="pageSize!=null and offset!=null">
+		limit #{offset},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="getOrderListCount" parameterType="java.util.Map" resultType="int">
+	    select count(1) as n
+		
+	    from t_order tor
+	    left join t_admin_user tau on tau.id=tor.operator_id
+	    left join t_user tu on tu.id=tor.user_id
+	    left join t_house th on th.id=tor.house_id
+	    left join t_district td on td.id=th.district_id
+	    left join t_merchant tm on tm.id=th.merchant_id
+	    where 1=1
+	    <include refid="getOrderListCondition"></include>
+	</select>
+	
+	<insert id="addOrderLog" parameterType="com.hishu.vacation.dto.OrderLog">
+	    insert into t_order_log(
+		order_id,
+		action,
+		result,
+		operator_id,
+		create_time
+	    )value(
+	    #{orderId},
+		#{action},
+		#{result},
+		#{operatorId},
+		now()
+	    )
+	</insert>
+	<select id="getOrderLogList" parameterType="com.hishu.vacation.dto.OrderLog" resultType="com.hishu.vacation.dto.OrderLog">
+	    select 
+	    tol.id,
+	    tol.order_id as orderId,
+		tol.action,
+		tol.result,
+		tol.operator_id as operatorId,
+		tol.create_time as creaetTime,
+		
+		tau.name as operatorName
+		
+	    from t_order_log tol
+	    left join t_admin_user tau on tau.id=tol.operator_id
+	    where tol.order_id=#{orderId}
+	</select>
+</mapper>

@@ -1,0 +1,761 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hishu.vacation.biz.dao.HouseDao">
+	<insert id="addHouse" parameterType="com.hishu.vacation.dto.House">
+		<selectKey resultType="int" keyProperty="id">
+			SELECT
+			LAST_INSERT_ID()
+		</selectKey>
+		insert into t_house(
+		merchant_id,
+		city_id,
+		district_id,
+		name,
+		type,
+		price,
+		share_img_url,
+		share_content,
+		share_title,
+		fun_count,
+		live_count,
+		parking,
+		is_spot_check,
+		toilet_independen,
+		toilet_common,
+		layout_balcony,
+		layout_kitchen,
+		layout_office,
+		layout_room,
+		floor_count,
+		area,
+		similar_house_count,
+		manage_type,
+		introduction,
+		sub_introduction,
+		offline_no,
+		third_part_id,
+		lawn_change,
+		seo_title,
+		tag_words,
+		key_words,
+		web_description,
+		check_in_time,
+		check_out_time,
+		reception_time,
+		deposit,
+		remark,
+		update_time,
+		create_time
+		)value(
+		#{merchantId},
+		#{cityId},
+		#{districtId},
+		#{name},
+		#{type},
+		#{price},
+		#{shareImgUrl},
+		#{shareContent},
+		#{shareTitle},
+		#{funCount},
+		#{liveCount},
+		#{parking},
+		#{isSpotCheck},
+		#{toiletIndependen},
+		#{toiletCommon},
+		#{layoutBalcony},
+		#{layoutKitchen},
+		#{layoutOffice},
+		#{layoutRoom},
+		#{floorCount},
+		#{area},
+		#{similarHouseCount},
+		#{manageType},
+		#{introduction},
+		#{subIntroduction},
+		#{offlineNo},
+		#{thirdPartId},
+		#{lawnChange},
+		#{seoTitle},
+		#{tagWords},
+		#{keyWords},
+		#{webDescription},
+		#{checkInTime},
+		#{checkOutTime},
+		#{receptionTime},
+		#{deposit},
+		#{remark},
+		now(),
+		now()
+		)
+	</insert>
+	
+	<delete id="deleteHouse" parameterType="com.hishu.vacation.dto.House">
+	    delete from t_house
+	    where id=#{id}
+	</delete>
+	
+	<update id="updateHouse" parameterType="com.hishu.vacation.dto.House">
+	    update t_house set update_time=now()
+	    <if test="cityId!=null">
+	    ,city_id=#{cityId}
+	    </if>
+	    <if test="districtId!=null">
+	    ,district_id=#{districtId}
+	    </if>
+	    <if test="name!=null and name!=''">
+		,name=#{name}	        
+	    </if>
+	    <if test="type!=null and type!=''">
+	    ,type=#{type}
+	    </if>
+	    <if test="price!=null">
+	    ,price=#{price}
+	    </if>
+	    <if test="shareImgUrl!=null and shareImgUrl!=''">
+	    ,share_img_url=#{shareImgUrl}
+	    </if>
+	    <if test="shareContent!=null and shareContent!=''">
+	    ,share_content=#{shareContent}
+	    </if>
+	    <if test="shareTitle!=null and shareTitle!=''">
+	    ,share_title=#{shareTitle}
+	    </if>
+	    <if test="funCount!=null">
+	    ,fun_count=#{funCount}
+	    </if>
+	    <if test="liveCount!=null">
+	    ,live_count=#{liveCount}
+	    </if>
+	    <if test="parking!=null and parking!=''">
+	    ,parking=#{parking}
+	    </if>
+	    <if test="isSpotCheck!=null">
+	    ,is_spot_check=#{isSpotCheck}
+	    </if>
+	    <if test="toiletIndependen!=null">
+	    ,toilet_independen=#{toiletIndependen}
+	    </if>
+	    <if test="toiletCommon!=null">
+	    ,toilet_common=#{toiletCommon}
+	    </if>
+	    <if test="layoutBalcony!=null">
+	    ,layout_balcony=#{layoutBalcony}
+	    </if>
+	    <if test="layoutKitchen!=null">
+	    ,layout_kitchen=#{layoutKitchen}
+	    </if>
+	    <if test="layoutOffice!=null">
+	    ,layout_office=#{layoutOffice}
+	    </if>
+	    <if test="layoutRoom!=null">
+	    ,layout_room=#{layoutRoom}
+	    </if>
+	    <if test="floorCount!=null">
+	    ,floor_count=#{floorCount}
+	    </if>
+	    <if test="area!=null">
+	    ,area=#{area}
+	    </if>
+	    <if test="similarHouseCount!=null">
+	    ,similar_house_count=#{similarHouseCount}
+	    </if>
+	    <if test="manageType!=null and manageType!=''">
+	    ,manage_type=#{manageType}
+	    </if>
+	    <if test="introduction!=null and introduction!=''">
+	    ,introduction=#{introduction}
+	    </if>
+	    <if test="subIntroduction!=null and subIntroduction!=''">
+	    ,sub_introduction=#{subIntroduction}
+	    </if>
+	    <if test="offlineNo!=null and offlineNo!=''">
+	    ,offline_no=#{offlineNo}
+	    </if>
+	    <if test="thirdPartId!=null and thirdPartId!=''">
+	    ,third_part_id=#{thirdPartId}
+	    </if>
+	    <if test="lawnChange!=null and lawnChange!=''">
+	    ,lawn_change=#{lawnChange}
+	    </if>
+	    <if test="seoTitle!=null and seoTitle!=''">
+	    ,seo_title=#{seoTitle}
+	    </if>
+	    <if test="tagWords!=null and tagWords!=''">
+	    ,tag_words=#{tagWords}
+	    </if>
+	    <if test="keyWords!=null and keyWords!=''">
+	    ,key_words=#{keyWords}
+	    </if>
+	    <if test="webDescription!=null and webDescription!=''">
+	    ,web_description=#{webDescription}
+	    </if>
+	    <if test="checkInTime!=null and checkInTime!=''">
+	    ,check_in_time=#{checkInTime}
+	    </if>
+	    <if test="checkOutTime!=null and checkOutTime!=''">
+	    ,check_out_time=#{checkOutTime}
+	    </if>
+	    <if test="receptionTime!=null and receptionTime!=''">
+	    ,reception_time=#{receptionTime}
+	    </if>
+	    <if test="deposit!=null">
+	    ,deposit=#{deposit}
+	    </if>
+	    <if test="remark!=null and remark!=''">
+	    ,remark=#{remark}
+	    </if>
+	    
+	    where id=#{id}
+	</update>
+	
+	<select id="getHouse" parameterType="com.hishu.vacation.dto.House" resultType="com.hishu.vacation.dto.House">
+		select
+		th.id,
+		th.merchant_id as merchantId,
+		th.city_id as cityId,
+		th.district_id as districtId,
+		th.name,
+		th.type,
+		th.price,
+		th.update_time as updateTime,
+		th.create_time as createTime,
+		th.share_img_url as shareImgUrl,
+		th.share_content as shareContent,
+		th.share_title as shareTitle,
+		th.fun_count as funCount,
+		th.live_count as liveCount,
+		th.parking,
+		th.is_spot_check as isSpotCheck,
+		th.toilet_independen as toiletIndependen,
+		th.toilet_common as toiletCommon,
+		th.layout_balcony as layoutBalcony,
+		th.layout_kitchen as layoutKitchen,
+		th.layout_office as layoutOffice,
+		th.layout_room as layoutRoom,
+		th.floor_count as floorCount,
+		th.area,
+		th.similar_house_count as similarHouseCount,
+		th.manage_type as manageType,
+		th.introduction,
+		th.sub_introduction as subIntroduction,
+		th.offline_no as offlineNo,
+		th.third_part_id as thirdPartId,
+		th.lawn_change as lawnChange,
+		th.seo_title as seoTitle,
+		th.tag_words as tagWords, 
+		th.key_words as keyWords,
+		th.web_description as webDescription,
+		th.check_in_time as checkInTime,
+		th.check_out_time as checkOutTime,
+		th.reception_time as receptionTime,
+		th.deposit,
+		th.remark,
+		
+		td.name as districtName,
+		
+		(
+			select GROUP_CONCAT(tha.id)
+			from t_house_house_attr thha
+			inner join t_house_attribute tha on tha.id=thha.house_attribute_id 
+			where thha.house_id=th.id
+		) as houseAttributes,
+		
+		(
+			select GROUP_CONCAT(thf.id)
+
+			from t_house_house_facility thhf
+			inner join t_house_facility thf on thf.id=thhf.facility_id
+			where thhf.house_id=th.id
+		) as houseFacilities,
+		
+		(
+			select GROUP_CONCAT(thr.id)
+			from t_house_house_reception thhr
+			inner join t_house_reception thr on thr.id=thhr.reception_id
+			where thhr.house_id=th.id
+		) as houseReceptions
+		
+		from t_house th
+		left join t_district td on td.id=th.district_id
+		where th.id=#{id}
+	</select>
+	
+	<sql id="getHouseListCondition">
+	    <if test="likeName!=null and likeName!=''">
+	        and th.name like concat('%',#{likeName},'%')
+	    </if>
+	    <if test="merchantId!=null">
+	        and th.merchant_id=#{merchantId}
+	    </if>
+	    <if test="cityId!=null">
+	        and th.city_id=#{cityId}
+	    </if>
+	    <if test="districtId!=null">
+	        and th.district_id=#{districtId}
+	    </if>
+	    <if test="type!=null and type!=''">
+	        and th.type=#{type}
+	    </if>
+	    <if test="funCount!=null">
+	        and th.fun_count=#{funCount}
+	    </if>
+	    <if test="liveCount!=null">
+	        and th.live_count>=#{liveCount}
+	    </if>
+	    <if test="parking!=null and parking!=''">
+	        and th.parking=#{parking}
+	    </if>
+	    <if test="isSpotCheck!=null">
+	        and th.is_spot_check=#{isSpotCheck}
+	    </if>
+	    <if test="toiletIndependen!=null">
+	        and th.toilet_independen=#{toiletIndependen}
+	    </if>
+	    <if test="toiletCommon!=null">
+	        and th.toilet_common=#{toiletCommon}
+	    </if>
+	    <if test="layoutBalcony!=null">
+	        and th.layout_balcony=#{layoutBalcony}
+	    </if>
+	    <if test="layoutKitchen!=null">
+	        and th.layout_kitchen=#{layoutKitchen}
+	    </if>
+	    <if test="layoutOffice!=null">
+	        and th.layout_office=#{layoutOffice}
+	    </if>
+	    <if test="layoutRoom!=null">
+	        and th.layout_room>=#{layoutRoom}
+	    </if>
+	    <if test="floorCount!=null">
+	        and th.floor_count=#{floorCount}
+	    </if>
+	    <if test="MaxArea!=null">
+	        and th.area <![CDATA[ <=#{MaxArea} ]]>
+	    </if>
+	    <if test="MinArea!=null">
+	        and th.area >=#{MinArea}
+	    </if>
+	    <if test="similarHouseCount!=null">
+	        and th.similar_house_count=#{similarHouseCount}
+	    </if>
+	    <if test="manageType!=null and manageType!=''">
+	        and th.manage_type=#{manageType}
+	    </if>
+	    <if test="offlineNo!=null and offlineNo!=''">
+	        and th.offline_no=#{offlineNo}
+	    </if>
+	    <if test="thirdPartId!=null and thirdPartId!=''">
+	        and th.third_part_id=#{thirdPartId}
+	    </if>
+	</sql>
+	
+	<select id="getHouseList" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.House">
+	    select
+		th.id,
+		th.merchant_id as merchantId,
+		th.city_id as cityId,
+		th.district_id as districtId,
+		th.name,
+		th.type,
+		th.update_time as updateTime,
+		th.create_time as createTime,
+		th.share_img_url as shareImgUrl,
+		th.share_content as shareContent,
+		th.share_title as shareTitle,
+		th.fun_count as funCount,
+		th.live_count as liveCount,
+		th.parking,
+		th.is_spot_check as isSpotCheck,
+		th.toilet_independen as toiletIndependen,
+		th.toilet_common as toiletCommon,
+		th.layout_balcony as layoutBalcony,
+		th.layout_kitchen as layoutKitchen,
+		th.layout_office as layoutOffice,
+		th.layout_room as layoutRoom,
+		th.floor_count as floorCount,
+		th.area,
+		th.similar_house_count as similarHouseCount,
+		th.manage_type as manageType,
+		th.introduction,
+		th.sub_introduction as subIntroduction,
+		th.offline_no as offlineNo,
+		th.third_part_id as thirdPartId,
+		th.lawn_change as lawnChange,
+		th.seo_title as seoTitle,
+		th.tag_words as tagWords, 
+		th.key_words as keyWords,
+		th.web_description as webDescription,
+		th.check_in_time as checkInTime,
+		th.check_out_time as checkOutTime,
+		th.reception_time as receptionTime,
+		th.deposit,
+		th.remark,
+		
+		tc.`name` as cityName,
+		td.`name` as districtName,
+		tm.`name` as merchantName,
+
+		(select thm.url from t_house_img thm where thm.house_id=th.id limit 1) as houseImg
+		
+		from t_house th
+		left join t_city tc on tc.id=th.city_id
+		left join t_district td on td.id=th.district_id and td.city_id=tc.id
+		left join t_merchant tm on tm.id=th.merchant_id
+		
+		where 1=1
+		<include refid="getHouseListCondition"></include>
+		order by th.update_time desc
+		<if test="offset!=null and pageSize!=null">
+		limit #{offset},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="getHouseListCount" parameterType="java.util.Map" resultType="int">
+	    select count(1) n
+		
+		from t_house th
+		where 1=1
+		<include refid="getHouseListCondition"></include>
+	</select>
+	
+	<!-- 房源属性 -->
+	<insert id="addHouseAttribute" parameterType="com.hishu.vacation.dto.HouseAttribute">
+	    insert into t_house_attribute(
+		type,
+		name,
+		icon,
+		create_time,
+		update_time
+	    )value(
+	    #{type},
+		#{name},
+		#{icon},
+		now(),
+		now()
+	    )
+	</insert>
+	<delete id="deleteHouseAttribute" parameterType="com.hishu.vacation.dto.HouseAttribute">
+	    delete from t_house_attribute
+	    where id=#{id}
+	</delete>
+	<update id="updateHouseAttribute" parameterType="com.hishu.vacation.dto.HouseAttribute">
+	    update t_house_attribute
+	    set update_time=now()
+	    <if test="name!=null and name!=''">
+	    ,name=#{name}
+	    </if>
+	    <if test="type!=null and type!=''">
+	    ,type=#{type}
+	    </if>
+	    <if test="icon!=null and icon!=''">
+	    ,icon=#{icon}
+	    </if>
+	    where id=#{id}
+	</update>
+	<select id="getHouseAttribute" parameterType="com.hishu.vacation.dto.HouseAttribute" resultType="com.hishu.vacation.dto.HouseAttribute">
+	    select
+	    id,
+	    type,
+		name,
+		icon,
+		create_time as createTime,
+		update_time as updateTime
+		
+	    from t_house_attribute
+	    where id=#{id}
+	</select>
+	
+	<sql id="getHouseAttributeListCondition">
+	    <if test="name!=null and name!=''">
+	        and tha.name=#{name}
+	    </if>
+	    <if test="type!=null and type!=''">
+	        and tha.type=#{type}
+	    </if>
+	</sql>
+	<select id="getHouseAttributeList" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.HouseAttribute">
+	    select
+	    tha.id,
+	    tha.type,
+		tha.name,
+		tha.icon,
+		tha.create_time as createTime,
+		tha.update_time as updateTime
+		
+	    from t_house_attribute tha
+	    where 1=1
+	    <include refid="getHouseAttributeListCondition"></include>
+		order by tha.type,tha.update_time desc
+		<if test="offset!=null and pageSize!=null">
+		limit #{offset},#{pageSize}
+		</if>
+	</select>
+	<select id="getHouseAttributeListCount" parameterType="java.util.Map" resultType="int">
+	    select count(1) as n
+		
+	    from t_house_attribute tha
+	    where 1=1
+	    <include refid="getHouseAttributeListCondition"></include>
+	</select>
+	<!-- 查房源关联的房源属性 -->
+	<select id="getHouseAttributeListOfHouse" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.HouseAttribute">
+	    select
+	    tha.id,
+	    tha.type,
+		tha.name,
+		tha.icon
+	    
+	    from t_house_house_attr thha
+	    inner join t_house_attribute tha on tha.id=thha.house_attribute_id
+	    where thha.house_id=#{houseId}
+	    order by tha.type
+	</select>
+	
+	<insert id="batchAddHouseAttributeRef" parameterType="java.util.Map">
+	    insert t_house_house_attr(house_id,house_attribute_id,create_time,update_time)
+	    values
+	    <foreach collection="list" item="obj" index="index" separator=",">
+		(#{houseId},#{obj},now(),now())
+		</foreach>
+	</insert>
+	<delete id="bathDeleteHouseAttributeRef" parameterType="java.util.Map">
+	    delete from t_house_house_attr
+	    where house_id=#{houseId}
+	</delete>
+	
+	<insert id="addHouseFacility" parameterType="com.hishu.vacation.dto.HouseFacility">
+	    insert into t_house_facility(
+		name,
+		type,
+		create_time,
+		update_time
+	    )value(
+	    #{name},
+	    #{type},
+	    now(),
+	    now()
+	    )
+	</insert>
+	<delete id="deleteHouseFacility" parameterType="com.hishu.vacation.dto.HouseFacility">
+	    delete from t_house_facility
+	    where id=#{id}
+	</delete>
+	<update id="updateHouseFacility" parameterType="com.hishu.vacation.dto.HouseFacility">
+	    update t_house_facility
+	    set update_time=now()
+	    <if test="name!=null and name!=''">
+	    ,name=#{name}
+	    </if>
+	    <if test="type!=null and type!=''">
+	    ,type=#{type}
+	    </if>
+	    where id=#{id}
+	</update>
+	<select id="getHouseFacility" parameterType="com.hishu.vacation.dto.HouseFacility" resultType="com.hishu.vacation.dto.HouseFacility">
+		select
+		id,
+		name,
+		type,
+		create_time as createTime,
+		update_time as updateTime
+		
+		from t_house_facility
+		where id=#{id}    
+	</select>
+	<sql id="getHouseFacilityListCondition">
+	    <if test="name!=null and name!=''">
+	        and thf.name=#{name}
+	    </if>
+	    <if test="type!=null and type!=''">
+	        and thf.type=#{type}
+	    </if>
+	</sql>
+	<select id="getHouseFacilityList" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.HouseFacility">
+	    select
+	    thf.id,
+		thf.name,
+		thf.type,
+		thf.create_time as createTime,
+		thf.update_time as updateTime
+		
+	    from t_house_facility thf
+	    where 1=1
+	    <include refid="getHouseFacilityListCondition"></include>
+		order by thf.type,thf.update_time desc
+		<if test="offset!=null and pageSize!=null">
+		limit #{offset},#{pageSize}
+		</if>
+	</select>
+	<select id="getHouseFacilityListCount" parameterType="java.util.Map" resultType="int">
+	    select count(1) as n
+		
+	    from t_house_facility thf
+	    where 1=1
+	    <include refid="getHouseFacilityListCondition"></include>
+	</select>
+	<!-- 查询房源关联的房源设施 -->
+	<select id="getHouseFacilityOfHouse" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.HouseFacility">
+	    select
+	    thf.id,
+		thf.name,
+		thf.type
+		
+	    from t_house_house_facility thhf
+	    inner join t_house_facility thf on thf.id=thhf.facility_id
+	    where thhf.house_id=#{houseId}
+	    order by thf.type
+	</select>
+	
+	<insert id="bathAddHouseFacilityRef" parameterType="java.util.Map">
+	    insert t_house_house_facility(house_id,facility_id,create_time,update_time)
+	    values
+	    <foreach collection="list" item="obj" index="index" separator=",">
+		(#{houseId},#{obj},now(),now())
+		</foreach>
+	</insert>
+	<delete id="bathDeleteHouseFacilityRef" parameterType="java.util.Map">
+	    delete from t_house_house_facility
+	    where house_id=#{houseId}
+	</delete>
+	
+	<insert id="addHouseReception" parameterType="com.hishu.vacation.dto.HouseReception">
+	    insert into t_house_reception(
+		name,
+		type,
+		create_time,
+		update_time
+	    )value{
+	    #{name},
+	    #{type},
+	    now(),
+	    now()
+	    }
+	</insert>
+	<delete id="deleteHouseReception" parameterType="com.hishu.vacation.dto.HouseReception">
+	    delete from t_house_reception
+	    where id=#{id}
+	</delete>
+	<update id="updateHouseReception" parameterType="com.hishu.vacation.dto.HouseReception">
+	    update t_house_reception
+	    set update_time=now()
+	    <if test="name!=null and name!=''">
+	    ,name=#{name}
+	    </if>
+	    <if test="type!=null and type!=''">
+	    ,type=#{type}
+	    </if>
+	    where id=#{id}
+	</update>
+	<select id="getHouseReception" parameterType="com.hishu.vacation.dto.HouseReception" resultType="com.hishu.vacation.dto.HouseReception">
+	    select
+	    id,
+	    name,
+	    type,
+	    create_time as createTime,
+	    update_time as updateTime
+	    
+	    from t_house_reception
+	    where id=#{id}
+	</select>
+	<sql id="getHouseReceptionListCondition">
+	    <if test="name!=null and name!=''">
+	        and thr.name=#{name}
+	    </if>
+	    <if test="type!=null and type!=''">
+	        and thr.type=#{type}
+	    </if>
+	</sql>
+	<select id="getHouseReceptionList" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.HouseReception">
+	    select
+	    thr.id,
+	    thr.name,
+	    thr.type,
+	    thr.create_time as createTime,
+	    thr.update_time as updateTime
+	    
+	    from t_house_reception thr
+	    where 1=1
+	    <include refid="getHouseReceptionListCondition"></include>
+		order by thr.type,thr.update_time desc
+		<if test="offset!=null and pageSize!=null">
+		limit #{offset},#{pageSize}
+		</if>
+	</select>
+	<select id="getHouseReceptionListCount" parameterType="java.util.Map" resultType="int">
+	    select count(1) as n
+	    
+	    from t_house_reception thr
+	    where 1=1
+	     <include refid="getHouseReceptionListCondition"></include>
+	</select>
+	<select id="getHouseReceptionOfHouse" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.HouseReception">
+	    select 
+	    thr.id,
+	    thr.name,
+	    thr.type,
+	    thr.create_time as createTime,
+	    thr.update_time as updateTime
+	    
+	    from t_house_house_reception thhr
+	    inner join t_house_reception thr on thr.id=thhr.reception_id
+	    where thhr.house_id=#{houseId}
+	</select>
+	
+	<insert id="bathAddHouseReceptionRef" parameterType="java.util.Map">
+	    insert t_house_house_reception(house_id,reception_id,create_time,update_time)
+	    values
+	    <foreach collection="list" item="obj" index="index" separator=",">
+		(#{houseId},#{obj},now(),now())
+		</foreach>
+	</insert>
+	<delete id="bathDeleteHouseReceptionRef" parameterType="java.util.Map">
+	    delete from t_house_house_reception
+	    where house_id=#{houseId}
+	</delete>
+	
+	<!-- 统计房价已过期的房源 -->
+	<select id="getHouseListOfBeOverdue" parameterType="java.util.Map" resultType="java.util.Map">
+	    select 
+		th.id,
+		th.`name`,
+		thdp.id,
+		tc.`name` as cityName,
+		td.`name` as districtName
+		
+		from t_house th 
+		left join t_city tc on tc.id=th.city_id
+		left join t_district td on td.id=th.district_id and td.city_id=tc.id
+		left join t_house_day_price thdp on thdp.house_id=th.id and thdp.day=DATE_FORMAT(NOW(),'%Y-%m-%d')
+		
+		where thdp.id is null
+	</select>
+	<!-- 统计房价即将过期的房源 -->
+	<select id="getHouseListOfWillBeOverdue" parameterType="java.util.Map" resultType="java.util.Map">
+	    <![CDATA[
+	    select 
+		th.id,
+		th.`name`,
+		tc.`name` as cityName,
+		td.`name` as districtName,
+		T.n
+		
+		from t_house th 
+		left join t_city tc on tc.id=th.city_id
+		left join t_district td on td.id=th.district_id and td.city_id=tc.id
+		inner join (
+			select 
+			th.id,
+			count(th.id) as n
+			
+			from t_house th 
+			left join t_house_day_price thdp on thdp.house_id=th.id 
+				and thdp.`day`>=#{startTime} and thdp.`day`<=#{endTime}
+			group by th.id
+		) T on T.id=th.id
+		where T.n<30
+		]]>
+	</select>
+	
+</mapper>

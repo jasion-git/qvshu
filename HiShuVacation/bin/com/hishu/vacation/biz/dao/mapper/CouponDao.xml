@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hishu.vacation.biz.dao.CouponDao">
+	
+	<insert id="addCoupon" parameterType="com.hishu.vacation.dto.Coupon">
+	    insert into t_coupon(
+	    name,
+		house_ids,
+		package_id,
+		descript,
+		out_of_datetime,
+		`limit`,
+		update_time,
+		create_time
+	    )value(
+	    #{name},
+		#{houseIds},
+		#{packageId},
+		#{descript},
+		#{outOfDatetime},
+		#{limit},
+		now(),
+		now()
+	    )
+	</insert>
+	
+	<delete id="deleteCoupon" parameterType="com.hishu.vacation.dto.Coupon">
+	    delete from t_coupon
+	    where id=#{id}
+	</delete>
+	
+	<update id="updateCoupon" parameterType="com.hishu.vacation.dto.Coupon">
+	    update t_coupon
+	    set update_time=now()
+	    <if test="name!=null and name!=''">
+	    ,name=#{name}
+	    </if>
+	    <if test="descript!=null and descript!=''">
+	    ,descript=#{descript}
+	    </if>
+	    <if test="limit!=null">
+	    ,`limit`=#{limit}
+	    </if>
+	    <if test="outOfDatetime!=null">
+	    ,out_of_datetime=#{outOfDatetime}
+	    </if>
+	    where id=#{id}
+	</update>
+	
+	<select id="getCoupon" parameterType="com.hishu.vacation.dto.Coupon" resultType="com.hishu.vacation.dto.Coupon">
+	    select 
+	    id,
+		name,
+		house_ids as houseIds,
+		package_id as packageId,
+		descript,
+		out_of_datetime as outOfDatetime,
+		update_time as updateTime,
+		create_time as createTime,
+		`limit`
+		
+	    from t_coupon
+	    where id=#{id}
+	</select>
+	
+	<sql id="getCouponListCondition">
+	    <if test="likeName!=null and likeName!=''">
+	        and name like concat('%',#{likeName},'%')
+	    </if>
+	    <if test="packageId!=null">
+	    	and package_id=#{packageId}
+	    </if>
+	    <if test="houseIds!=null and houseIds!=''">
+	        and house_ids like concat('%',#{houseIds},'%')
+	    </if>
+	    <if test="outOfDatetime!=null">
+	        and out_of_datetime=#{outOfDatetime}
+	    </if>
+	    <if test="limit!=null">
+	        and `limit`=#{limit}
+	    </if>
+	</sql>
+	<select id="getCouponList" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.Coupon">
+	    select 
+	    id,
+		name,
+		house_ids as houseIds,
+		package_id as packageId,
+		descript,
+		out_of_datetime as outOfDatetime,
+		`limit`,
+		update_time as updateTime,
+		create_time as createTime
+
+	    from t_coupon
+	    where 1=1
+	    <include refid="getCouponListCondition"></include>
+	    order by update_time desc
+	    <if test="pageSize!=null and offset!=null">
+		limit #{offset},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="getCouponListCount" parameterType="java.util.Map" resultType="int">
+	    select count(1) as n
+		
+	    from t_coupon
+	    where 1=1
+	    <include refid="getCouponListCondition"></include>
+	</select>
+</mapper>

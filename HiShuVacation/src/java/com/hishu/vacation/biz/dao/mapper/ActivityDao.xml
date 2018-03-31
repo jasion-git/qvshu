@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hishu.vacation.biz.dao.ActivityDao">
+	
+	<insert id="addActivity" parameterType="com.hishu.vacation.dto.Activity">
+	    insert into t_activity(
+		name,
+		type,
+		expiry_time,
+		remark,
+		create_time,
+		update_time
+	    )value(
+	    #{name},
+		#{type},
+		#{expiryTime},
+		#{remark},
+		now(),
+		now()
+	    )
+	</insert>
+	
+	<delete id="deleteActivity" parameterType="com.hishu.vacation.dto.Activity">
+	    delete from t_activity
+	    where id=#{id}
+	</delete>
+	
+	<update id="updateActivity" parameterType="com.hishu.vacation.dto.Activity">
+	    update t_activity
+	    set update_time=now()
+	    <if test="name!=null and name!=''">
+	    ,name=#{name}
+	    </if>
+	    <if test="remark!=null and remark!=''">
+	    ,remark=#{remark}
+	    </if>
+	    <if test="expiryTime!=null">
+	    ,expiry_time=#{expiryTime}
+	    </if>
+	    
+	    where id=#{id}
+	</update>
+	
+	<select id="getActivity" parameterType="com.hishu.vacation.dto.Activity" resultType="com.hishu.vacation.dto.Activity">
+	    select 
+	    id,
+		name,
+		type,
+		expiry_time as expiryTime,
+		remark,
+		create_time as createTime,
+		update_time as updateTime
+			    
+	    from t_activity
+	    where 
+	    <if test="id!=null">
+	    id=#{id}    
+	    </if>
+		<if test="type!=null">
+		type=#{type} limit 1;
+		</if>	    
+	</select>
+	
+	<sql id="getActivityListCondition">
+	    <if test="likeName!=null and likeName!=''">
+	        and name like concat('%',#{likeName},'%')
+	    </if>
+	    <if test="type!=null and type!=''">
+	        and type=#{type}
+	    </if>
+	    <if test="expiryTime!=null">
+			and expiry_time >=#{expiryTime}	        
+	    </if>
+	</sql>
+	<select id="getActivityList" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.Activity">
+	    select 
+	    id,
+		name,
+		type,
+		expiry_time as expiryTime,
+		remark,
+		create_time as createTime,
+		update_time as updateTime
+		
+	    from t_activity
+	    where 1=1
+	    <include refid="getActivityListCondition"></include>
+	    order by update_time desc
+	    <if test="pageSize!=null and offset!=null">
+		limit #{offset},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="getActivityListCount" parameterType="java.util.Map" resultType="int">
+	    select count(1) as n
+		
+	    from t_activity
+	    where 1=1
+	    <include refid="getActivityListCondition"></include>
+	</select>
+</mapper>

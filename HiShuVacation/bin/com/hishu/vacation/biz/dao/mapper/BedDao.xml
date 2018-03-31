@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hishu.vacation.biz.dao.BedDao">
+	
+	<insert id="addBed" parameterType="com.hishu.vacation.dto.Bed">
+	    insert into t_bed(
+		house_id,
+		`length`,
+		`width`,
+		`count`,
+		mattress,
+		update_time,
+		create_time
+	    )value(
+	    #{houseId},
+		#{length},
+		#{width},
+		#{count},
+		#{mattress},
+		now(),
+		now()
+	    )
+	</insert>
+	
+	<delete id="deleteBed" parameterType="com.hishu.vacation.dto.Bed">
+	    delete from t_bed
+	    where id=#{id}
+	</delete>
+	
+	<delete id="bathDeleteBed" parameterType="com.hishu.vacation.dto.Bed">
+	    delete from t_bed
+	    where house_id=#{houseId}
+	</delete>
+	
+	<update id="updateBed" parameterType="com.hishu.vacation.dto.Bed">
+	    update t_bed
+	    set update_time=now()
+	    <if test="mattress!=null and mattress!=''">
+	    ,mattress=#{mattress}
+	    </if>
+	    <if test="length!=null">
+	    ,`length`=#{length}
+	    </if>
+	    <if test="width!=null">
+	    ,`width`=#{width}
+	    </if>
+	    <if test="count!=null">
+	    ,`count`=#{count}
+	    </if>
+	    
+	    where id=#{id}
+	</update>
+	
+	<select id="getBed" parameterType="com.hishu.vacation.dto.Bed" resultType="com.hishu.vacation.dto.Bed">
+	    select 
+	    id,
+	    house_id as houseId,
+		`length`,
+		`width`,
+		`count`,
+		mattress,
+		create_time as createTime,
+		update_time as updateTime
+			    
+	    from t_bed
+	    where id=#{id}
+	</select>
+	
+	<select id="getBedList" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.Bed">
+	    select 
+	    id,
+	    house_id as houseId,
+		`length`,
+		`width`,
+		`count`,
+		mattress,
+		create_time as createTime,
+		update_time as updateTime
+		
+	    from t_bed
+	    where house_id=#{houseId}
+	</select>
+	
+	
+</mapper>

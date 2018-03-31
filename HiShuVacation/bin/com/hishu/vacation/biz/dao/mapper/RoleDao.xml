@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hishu.vacation.biz.dao.RoleDao">
+	
+	<insert id="addRole" parameterType="com.hishu.vacation.dto.Role">
+	    insert into t_role(
+		name,
+		code,
+		create_time,
+		update_time
+	    )value(
+	    #{name},
+		#{code},
+		now(),
+		now()
+	    )
+	</insert>
+	
+	<delete id="deleteRole" parameterType="com.hishu.vacation.dto.Role">
+	    delete from t_role
+	    where id=#{id}
+	</delete>
+	
+	<update id="updateRole" parameterType="com.hishu.vacation.dto.Role">
+	    update t_role
+	    set update_time=now()
+	    <if test="name!=null and name!=''">
+	    ,name=#{name}
+	    </if>
+	    where id=#{id}
+	</update>
+	
+	<select id="getRole" parameterType="com.hishu.vacation.dto.Role" resultType="com.hishu.vacation.dto.Role">
+	 	select 
+	 	id,
+		name,
+		code,
+		create_time as createTime,
+		update_time as updateTime
+	 	
+	 	from t_role
+	 	where id=#{id}   
+	</select>
+	
+	<sql id="getRoleListCondition">
+	    <if test="likeName!=null and likeName!=''">
+	        and name like concat('%',#{likeName},'%')
+	    </if>
+	    <if test="code!=null and code!=''">
+	        and code=#{code}
+	    </if>
+	</sql>
+	<select id="getRoleList" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.Role">
+	    select
+	    id,
+		name,
+		code,
+		create_time as createTime,
+		update_time as updateTime
+		
+	    from t_role
+	    where 1=1
+	    <include refid="getRoleListCondition"></include>
+	    order by update_time desc
+	    <if test="pageSize!=null and offset!=null">
+		limit #{offset},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="getRoleListCount" parameterType="java.util.Map" resultType="int">
+	    select count(1) as n
+		
+	    from t_role
+	    where 1=1
+	    <include refid="getRoleListCondition"></include>
+	</select>
+	
+	<select id="getModuleListByRoleId" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.Module">
+	    select
+		tm.id, 
+		tm.`name`,
+		tm.code
+		
+		from t_module tm
+		inner join t_role_module trm on trm.module_id=tm.id
+		where 1=1
+		<if test="roleId!=null">
+		    and trm.role_id=#{roleId}
+		</if>
+		
+	</select>
+	
+	<select id="getAuthListByRoleId" parameterType="java.util.Map" resultType="com.hishu.vacation.dto.Auth">
+	    select 
+		ta.id,
+		ta.`code`,
+		ta.`name`
+		
+		from t_auth ta 
+		inner join t_module_auth tma on tma.auth_id=ta.id
+		inner join t_role_module trm on trm.module_id=tma.module_id
+		where 1=1
+		<if test="roleId!=null">
+		    and trm.role_id=#{roleId}
+		</if>
+	</select>
+</mapper>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" 	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd  
+	http://www.springframework.org/schema/context   
+	http://www.springframework.org/schema/context/spring-context-4.0.xsd  
+	http://www.springframework.org/schema/aop   
+	http://www.springframework.org/schema/aop/spring-aop-4.0.xsd  
+	http://www.springframework.org/schema/mvc 
+	http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+	http://www.springframework.org/schema/tx   
+	http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+	
+
+    <!-- 配置进行授权和认证的 Realm -->  
+    <bean id="shiroRealm" class="com.hishu.vacation.web.security.ShiroRealm"></bean>  
+    <!-- 配置缓存管理器 -->  
+    <bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">  
+    	<!-- 指定 ehcache 的配置文件 -->   
+        <property name="cacheManagerConfigFile" value="classpath:shiro-ehcache.xml"/>   
+    </bean>
+    <!-- 配置 Shiro 的 SecurityManager Bean. -->  
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+    	<!--  
+    	<property name="cacheManager" ref="cacheManager"/>
+    	<property name="sessionMode" value="native" />
+    	-->
+        <property name="realm" ref="shiroRealm"/>
+    </bean>
+	<!-- 启用shrio授权注解拦截方式 -->  
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">  
+    	<!-- 装配 securityManager -->
+     	<property name="securityManager" ref="securityManager"/>
+     	<!-- 配置登陆页面 -->
+     	<property name="loginUrl" value="/common/unlogin.json"/>
+     	<!-- 登陆成功后的一面 -->
+     	<property name="successUrl" value="/html/index.html"/>
+     	<property name="unauthorizedUrl" value="/common/unauthorized.json"/>
+     	<!-- 具体配置需要拦截哪些 URL, 以及访问对应的 URL 时使用 Shiro 的什么 Filter 进行拦截.  -->
+     	<property name="filterChainDefinitions">
+     		<value>  
+           	/common/login.json=anon
+           	/common/unlogin.json=anon
+           	/common/logout.json=anon
+           	/common/unauthorized.json=anon
+			/demo/testauth.json=authc,perms[testpermission]
+           	/logout=logout
+           	/**=authc,roles[admin]
+     		</value>
+     	</property>
+    </bean>
+
+    <!-- 配置 Bean 后置处理器: 会自动的调用和 Spring 整合后各个组件的生命周期方法. -->  
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>  
+</beans>
